@@ -1,0 +1,74 @@
+from telebot import types
+from db import get_data_account_no_subcategory_keyboard, main_category_no_subcategory_data
+from db import get_category_subcategory, get_subcategory, main_category_subcategory_data
+from db import get_user
+
+def product_keyboard():
+    keyboard = types.InlineKeyboardMarkup()
+    with_cat = main_category_subcategory_data()
+    no_cat = main_category_no_subcategory_data()
+    for item in with_cat:
+        keyboard.add(types.InlineKeyboardButton(text=with_cat[item], callback_data=f'{item}|main|None|None|None'))
+    for item in no_cat:
+        keyboard.add(types.InlineKeyboardButton(text=no_cat[item], callback_data=f'{item}|main|None|None|None'))
+    return keyboard
+
+
+def account_no_subcategory_keyboard(category):
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard_data = get_data_account_no_subcategory_keyboard(category)
+    for item in keyboard_data:
+        keyboard.add(types.InlineKeyboardButton(text=item['name'], callback_data=item['callback']))
+    back = types.InlineKeyboardButton(text='<< Назад', callback_data='back|category')
+    keyboard.add(back)
+    return keyboard
+
+
+def buy_keyboard(service, count, back, user_id):
+    keyboard = types.InlineKeyboardMarkup()
+    down_1 = types.InlineKeyboardButton(text=f'🔻', callback_data=f'{service}|buy|-1')
+    count = types.InlineKeyboardButton(text=f'{count} шт', callback_data=f'{service}|buy|0')
+    up_1 = types.InlineKeyboardButton(text=f'🔺', callback_data=f'{service}|buy|1')
+    down_10 = types.InlineKeyboardButton(text=f'10 🔻', callback_data=f'{service}|buy|-10')
+    up_10 = types.InlineKeyboardButton(text=f'10 🔺', callback_data=f'{service}|buy|10')
+    back_button = types.InlineKeyboardButton(text='<< Назад', callback_data=f'{back}|back|None|None')
+    buy = types.InlineKeyboardButton(text=f'Купить', callback_data=f'pay|{back}|None|None')
+    data_user = get_user(user_id=user_id)
+
+    keyboard.add(down_1, count, up_1)
+    keyboard.add(down_10, up_10)
+    keyboard.add(buy)
+    # if data_user['temp_cart']['bonus'] > 0:
+    #     buy_bonus = types.InlineKeyboardButton(text=f'Оплатить бонусами ({data_user["temp_cart"]["bonus"]} бонусов)', callback_data=f'pay_bonus|{back}|None|None')
+    #     keyboard.add(buy_bonus)
+
+    keyboard.add(back_button)
+    return keyboard
+
+
+def category_subcategory_keyboard(cat):
+    keyboard = types.InlineKeyboardMarkup()
+    category = get_category_subcategory(cat)
+    for item in category:
+        keyboard.add(types.InlineKeyboardButton(text=item['name'], callback_data=item['callback']))
+    keyboard.add(types.InlineKeyboardButton(text='<< Назад', callback_data='back|category'))
+    return keyboard
+
+def subcategory_keyboard(cat, category_acc):
+    keyboard = types.InlineKeyboardMarkup()
+    category = get_subcategory(category_acc)
+    category = category['accounts_data']
+    for item in category:
+        if len(item['accounts']) == 0:
+            continue
+        keyboard.add(types.InlineKeyboardButton(text=item['name'], callback_data=item['callback']))
+    keyboard.add(types.InlineKeyboardButton(text='<< Назад', callback_data=f'{cat}|back|None|None|None'))
+    return keyboard
+
+def pay_keyboard(category, pay):
+    keyboard = types.InlineKeyboardMarkup()
+    button = types.InlineKeyboardButton(text='Оплатить', callback_data=f'pay|{category}|{pay}')
+    # button_1 = types.InlineKeyboardButton(text='Использовать бонусы', callback_data=f'pay|{category}|bonus')
+    keyboard.add(button)
+    # keyboard.add(button_1)
+    return keyboard

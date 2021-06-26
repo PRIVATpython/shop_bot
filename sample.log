@@ -1,0 +1,8 @@
+ERROR:root:name 'keyboardsc' is not defined
+ERROR:root:name 'keyboardsc' is not defined
+ERROR:root:'str' object has no attribute 'spilt'
+ERROR:root:'str' object has no attribute 'spilt'
+ERROR:TeleBot:A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+ERROR:TeleBot:A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+ERROR:root:('Connection aborted.', ConnectionAbortedError(10053, 'Программа на вашем хост-компьютере разорвала установленное подключение', None, 10053, None))
+ERROR:root:[WinError 2] Не удается найти указанный файл: 'img/AgACAgIAAxkBAAIlnWDWOh01sjTLzRrr3KEMSEt7m-JgAAJytDEbZw2wSvcoAqPdYjh3AQADAgADcwADIAQ.jpg'
