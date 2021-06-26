@@ -3,10 +3,13 @@ from settings import TELEGRAM_KEY
 from keyboards import product_keyboard
 from db import set_default_temp_cart
 from db import get_subcategory_data, get_subcategory
-from keyboards import category_subcategory_keyboard, subcategory_keyboard
+from keyboards import category_subcategory_keyboard, subcategory_keyboard, pay_keyboard
 from db import get_temp_cart, give_account_no_subcategory, give_account_subcategory
-from keyboards import pay_keyboard
+from keyboards import pay_bonus_keyboard
 from db import main_category_subcategory, main_category_no_subcategory
+from db import get_bonus
+
+
 bot = telebot.TeleBot(TELEGRAM_KEY, parse_mode='MARKDOWN')
 with_cat = main_category_subcategory()
 no_cat = main_category_no_subcategory()
@@ -167,7 +170,7 @@ def account_no_subcategory_text(service):
 from db import give_bonus
 
 #-----PAYHANLDERS HANDLERS
-@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'pay' or call.data.split('|')[-1] == 'pay_bonus')
+@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'pay')
 def pay_test(call):
     user_id = call.message.chat.id
     category = call.data.split('|')[1]
@@ -184,26 +187,18 @@ def pay_test(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay')
 def pay_handler(call):
-
     user_id = call.message.chat.id
-    temp_cart = get_temp_cart(user_id)
 
+    if call.data.split('|')[-1] == 'pay_bonus':
+        get_bonus(user_id)
+        reply_markup = pay_keyboard(call.data.split('|')[1])
+    else:
+        reply_markup = pay_bonus_keyboard(call.data.split('|')[1], user_id)
+    temp_cart = get_temp_cart(user_id)
     bot.delete_message(user_id, call.message.message_id)
     bot.send_message(chat_id=user_id, text=f'Товар: {temp_cart["product"]}\n\nЦена: {temp_cart["price"]}\n\n'
                                            f'Кол-во: {temp_cart["count"]}\n\nЦена за все: {temp_cart["all_price"]}',
-                     reply_markup=pay_keyboard(call.data.split('|')[1], 'pay'),
+                     reply_markup=reply_markup,
                      parse_mode='HTML')
 
 
-from db import get_bonus
-@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay_bonus')
-def pay_handler(call):
-    user_id = call.message.chat.id
-    get_bonus(user_id)
-    temp_cart = get_temp_cart(user_id)
-
-    bot.delete_message(user_id, call.message.message_id)
-    bot.send_message(chat_id=user_id, text=f'Товар: {temp_cart["product"]}\n\nЦена: {temp_cart["price"]}\n\n'
-                                           f'Кол-во: {temp_cart["count"]}\n\nЦена за все: {temp_cart["all_price"]}',
-                     reply_markup=pay_keyboard(call.data.split('|')[1], 'pay_bonus'),
-                     parse_mode='HTML')
