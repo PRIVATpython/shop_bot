@@ -98,3 +98,9 @@ def cancel_keyboard():
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text=f'Отмена', callback_data=f"cancel_input|None"))
     return keyboard
+
+def clone_img_keyboard():
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(text=f'Взять картинку из подгатегории', callback_data=f"get_subcat_img"))
+    keyboard.add(types.InlineKeyboardButton(text=f'Отмена', callback_data=f"cancel_input|None"))
+    return keyboard

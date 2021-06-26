@@ -1,9 +1,13 @@
 from handlers.handlers import bot
-from keyboards import admin_product_keyboard, admin_category_subcategory_keyboard, cancel_keyboard
+from keyboards import admin_product_keyboard, admin_category_subcategory_keyboard, cancel_keyboard, clone_img_keyboard
 from db import add_new_no_subcategory, add_subcategory
 from db import main_category_subcategory, main_category_no_subcategory
 from db import find_no_subcategory_name
+from db import get_subcategory
+
 import requests
+
+
 with_cat = main_category_subcategory()
 no_cat = main_category_no_subcategory()
 
@@ -186,7 +190,7 @@ def set_social_description(message):
         if message.text is not None:
             description = message.text
             admin_data[user_id]['description'] = description
-            message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=cancel_keyboard())
+            message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=clone_img_keyboard())
             bot.register_next_step_handler(message, set_social_url_img)
         else:
             message = bot.send_message(user_id, f"Введите описание (Только текст): ", reply_markup=cancel_keyboard())
@@ -195,6 +199,21 @@ def set_social_description(message):
         message = bot.send_message(user_id, f"Введите описание (Только текст): ", reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, set_social_description)
 
+
+@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'get_subcat_img')
+def get_subcat_img(call):
+    global admin_data
+    user_id = call.message.chat.id
+    bot.clear_step_handler_by_chat_id(chat_id=user_id)
+    bot.delete_message(user_id, call.message.message_id)
+    service = get_subcategory(admin_data[user_id]['high_id'])
+    admin_data[user_id]['img'] = service['img']
+    add_subcategory(admin_data[user_id])
+    admin_data[user_id] = None
+    bot.send_message(user_id, 'Успешно')
+
+
+
 def set_social_url_img(message):
     global admin_data
     user_id = message.chat.id
@@ -202,11 +221,11 @@ def set_social_url_img(message):
         if message.text is not None:
             img = message.text
             if img.split(':')[0] != 'https':
-                message = bot.send_message(user_id, f"Url должен начинаться с https:// ", reply_markup=cancel_keyboard())
+                message = bot.send_message(user_id, f"Url должен начинаться с https:// ", reply_markup=clone_img_keyboard())
                 bot.register_next_step_handler(message, set_social_url_img)
                 return
             if requests.get(img).headers['Content-Type'].split('/')[0] != 'image':
-                message = bot.send_message(user_id, f"Введите корректный url картинки: ", reply_markup=cancel_keyboard())
+                message = bot.send_message(user_id, f"Введите корректный url картинки: ", reply_markup=clone_img_keyboard())
                 bot.register_next_step_handler(message, set_social_url_img)
                 return
             admin_data[user_id]['img'] = img
@@ -219,7 +238,7 @@ def set_social_url_img(message):
                 new_file.write(downloaded_file)
             admin_data[user_id]['img'] = url
         else:
-            message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=cancel_keyboard())
+            message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=clone_img_keyboard())
             bot.register_next_step_handler(message, set_social_url_img)
             return
 
@@ -227,5 +246,5 @@ def set_social_url_img(message):
         admin_data[user_id] = None
         bot.send_message(user_id, 'Успешно')
     except:
-        message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=cancel_keyboard())
+        message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=clone_img_keyboard())
         bot.register_next_step_handler(message, set_social_url_img)
