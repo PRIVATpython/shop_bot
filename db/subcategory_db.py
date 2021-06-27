@@ -121,8 +121,6 @@ def give_account_subcategory(user_id):
         account = accounts_list.pop(0)
         accounts.append(account)
         db.social_network.update_one({"accounts_data.name": temp_cart['product']}, {'$set': {"accounts_data.$.accounts": accounts_list}})
-    # my_purchases(service, user_id, accounts)
-    # my_purchases(temp_cart['product'], user_id, accounts)
     return accounts
 
 
@@ -145,21 +143,5 @@ def my_purchases(service, user_id, accounts):
     user_data = db.users.find_one({'user_id': user_id, 'buy.sub.accounts_data.id': product_data['id']})
     if user_data is None:
         db.users.update_one({'user_id': user_id, 'buy.sub.id': service_data['id']}, {'$push': {'buy.sub.$.accounts_data': product_data}})
-    # db.users.update_one({'user_id': user_id, 'buy.sub.id.accounts_data': product_data['id']}, {'$addToSet': {'buy.sub.accounts_data.$.accounts': 'privet'}})
-    # x = db.users.update_one({'user_id': user_id, 'buy.sub.accounts_data.id': product_data['id']}, {'$push': {'buy.sub.$.accounts_data.$.accounts': 'privet'}})
-    # print(x)
-    # print(user_data)
 
-    # print('\n\n')
-
-# def stest():
-#     x = db.users.find_one({'user_id': 251770611, 'buy.sub.accounts_data.id': 'n1y7v'})
-#
-#     db.users.update_one({'user_id': 251770611},
-#                         {'$push': {'buy.sub.$[i].accounts_data.$[j].accounts': 'privet'}},
-#                         array_filters=[{
-#                             'i.id': 'ccd77',
-#                             'j.id': 'n1y7v'
-#                         }])
-#     print(x)
 
