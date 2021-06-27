@@ -84,7 +84,7 @@ def give_account_no_subcategory(user_id):
     for item in range(count):
         account = accounts_list.pop(0)
         accounts.append(account)
-        db.online_service.update({'name': temp_cart['product']}, {'$pull': {'accounts': account}})
+        db.online_service.update({'name': temp_cart['product']}, {'$set': {'accounts': accounts_list}})
     print(accounts_list)
     return accounts
 

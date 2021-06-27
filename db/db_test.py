@@ -1,6 +1,10 @@
 import requests
-# from db.db import db
 
-while True:
-    x = requests.get('http://api.randomdatatools.ru').json()
-    print(f'{x["Email"]}|{x["Password"]}')
+
+def generator_normal_acc(count):
+    login_list = []
+    for i in range(count):
+        res = requests.get('http://api.randomdatatools.ru').json()
+        login_data = f'{res["Email"]}|{res["Password"]}'
+        login_list.append(login_data)
+    return login_list

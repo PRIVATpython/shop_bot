@@ -2,7 +2,6 @@ from handlers.handlers import bot
 from db import get_or_create_user
 from keyboards import main_keyboard, main_admin_keyboard
 
-
 @bot.message_handler(commands=['start', 'help'])
 def command_start(message):
 
@@ -15,5 +14,6 @@ def command_start(message):
 	user = get_or_create_user(message.from_user)
 	if user['admin'] == 'admin':
 		bot.send_message(message.chat.id, "Выберите из меню ниже: ", reply_markup=main_admin_keyboard())
+
 
 

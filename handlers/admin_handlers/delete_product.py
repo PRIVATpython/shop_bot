@@ -1,6 +1,6 @@
 from handlers.handlers import bot
 from keyboards import (admin_product_keyboard, admin_no_subcategory_keboard, del_yes_no, admin_category_subcategory_keyboard,
-                       admin_service_subcategory_keboard)
+                       admin_service_subcategory_keyboard)
 from db import get_data_account_no_subcategory, del_no_subcategory_db, get_subcategory, get_subcategory_data, del_subcategory
 from db import main_category_subcategory, main_category_no_subcategory
 
@@ -46,7 +46,7 @@ def dell_goods_social(call):
     category = call.data.split('|')[2]
     service = get_subcategory(category)
     bot.delete_message(user_id, call.message.message_id)
-    bot.send_message(user_id, f"Выберите товар: ", reply_markup=admin_service_subcategory_keboard(call.data.split('|')[0],
+    bot.send_message(user_id, f"Выберите товар: ", reply_markup=admin_service_subcategory_keyboard(call.data.split('|')[0],
                                                                                                   service['accounts_data']))
 
 

@@ -1,6 +1,6 @@
 from handlers.handlers import bot
 from keyboards import (admin_product_keyboard, admin_no_subcategory_keboard, change_img_price_name,
-                       admin_category_subcategory_keyboard, admin_service_subcategory_keboard, cancel_keyboard)
+                       admin_category_subcategory_keyboard, admin_service_subcategory_keyboard, cancel_keyboard)
 from db import main_category_subcategory, get_subcategory, change_good_subcategory
 from db import main_category_no_subcategory, change_no_subcategory
 import requests
@@ -146,7 +146,7 @@ def change_social_service(call):
     user_id = call.message.chat.id
     category = call.data.split('|')[2]
     service = get_subcategory(category)
-    keyboard = admin_service_subcategory_keboard(call.data.split('|')[0], service['accounts_data'])
+    keyboard = admin_service_subcategory_keyboard(call.data.split('|')[0], service['accounts_data'])
     bot.delete_message(user_id, call.message.message_id)
     bot.send_message(chat_id=user_id, text=f'Выберите аккаунт: ', reply_markup=keyboard)
 
