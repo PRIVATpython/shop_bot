@@ -12,7 +12,7 @@ admin_data = {}
 
 
 @bot.message_handler(regexp='^(Изменить товар)$')
-def change_goods(message):
+def change_product(message):
     global with_cat
     with_cat = main_category_subcategory()
     global no_cat
@@ -25,7 +25,8 @@ def change_goods(message):
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'change_goods'
                                               and call.data.split('|')[1] in no_cat
                                               and call.data.split('|')[2] == 'None')
-def change_online_service(call):
+def change_product_no_sub(call):
+    """No subcategories/change product - product list"""
     user_id = call.message.chat.id
     category = call.data.split('|')[0]
     bot.delete_message(user_id, call.message.message_id)
@@ -35,30 +36,35 @@ def change_online_service(call):
 
 @bot.callback_query_handler(
     func=lambda call: call.data.split('|')[0] == 'change_goods' and call.data.split('|')[1] in no_cat and call.data.split('|')[2] != 'None')
-def change_online_service(call):
+def change_product_no_sub(call):
+    """No subcategories/change product - main page"""
     global admin_data
     user_id = call.message.chat.id
     admin_data[user_id] = {
-
             'service': call.data.split('|')[2]
-
     }
     if call.data.split('|')[-1] == 'img':
         bot.delete_message(user_id, call.message.message_id)
         message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат: ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_img_online_service)
+        bot.register_next_step_handler(message, change_product_img_no_sub)
         return
 
     elif call.data.split('|')[-1] == 'name':
         bot.delete_message(user_id, call.message.message_id)
         message = bot.send_message(user_id, f"Введите новое название категории: ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_name_online_service)
+        bot.register_next_step_handler(message, change_product_name_no_sub)
         return
 
     elif call.data.split('|')[-1] == 'price':
         bot.delete_message(user_id, call.message.message_id)
         message = bot.send_message(user_id, f"Введите новую цену: ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_price_online_service)
+        bot.register_next_step_handler(message, change_product_price_no_sub)
+        return
+
+    elif call.data.split('|')[-1] == 'description':
+        bot.delete_message(user_id, call.message.message_id)
+        message = bot.send_message(user_id, f"Введите новое описание: ", reply_markup=cancel_keyboard())
+        bot.register_next_step_handler(message, change_product_description_no_sub)
         return
 
     bot.delete_message(user_id, call.message.message_id)
@@ -66,7 +72,8 @@ def change_online_service(call):
                      reply_markup=change_img_price_name(call.data))
 
 
-def change_img_online_service(message):
+def change_product_img_no_sub(message):
+    """No subcategories/change product - image change"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -81,20 +88,23 @@ def change_img_online_service(message):
                 new_file.write(downloaded_file)
             admin_data[user_id]['img'] = url_photo
         else:
-            message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Ссылка - текстом, либо картинка): ", reply_markup=cancel_keyboard())
-            bot.register_next_step_handler(message, change_img_online_service)
+            message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Ссылка - текстом, либо картинка): ",
+                                       reply_markup=cancel_keyboard())
+            bot.register_next_step_handler(message, change_product_img_no_sub)
             return
         category = 'img'
         change_no_subcategory(data=url_photo, service=admin_data[user_id]['service'], category=category)
         bot.send_message(user_id, 'Успешно')
         admin_data[user_id] = None
     except:
-        message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Ссылка - текстом, либо картинка): ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_img_online_service)
+        message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Ссылка - текстом, либо картинка): ",
+                                   reply_markup=cancel_keyboard())
+        bot.register_next_step_handler(message, change_product_img_no_sub)
         return
 
 
-def change_name_online_service(message):
+def change_product_name_no_sub(message):
+    """No subcategories/change product - name change"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -105,33 +115,61 @@ def change_name_online_service(message):
             bot.send_message(user_id, 'Успешно')
             admin_data[user_id] = None
         else:
-            message = bot.send_message(user_id, f"Введите новое название категории (Только текст) : ", reply_markup=cancel_keyboard())
-            bot.register_next_step_handler(message, change_name_online_service)
+            message = bot.send_message(user_id, f"Введите новое название (Только текст) : ", reply_markup=cancel_keyboard())
+            bot.register_next_step_handler(message, change_product_name_no_sub)
     except:
-        message = bot.send_message(user_id, f"Введите новое название категории (Только текст) : ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_name_online_service)
+        message = bot.send_message(user_id, f"Введите новое название (Только текст) : ", reply_markup=cancel_keyboard())
+        bot.register_next_step_handler(message, change_product_name_no_sub)
 
-def change_price_online_service(message):
+
+def change_product_price_no_sub(message):
+    """No subcategories/change product - price change"""
     user_id = message.chat.id
     try:
         global admin_data
         if message.text is not None:
             price = int(message.text)
+            if price < 0:
+                message = bot.send_message(user_id, f"Цена не может быть отрицательной!", reply_markup=cancel_keyboard())
+                bot.register_next_step_handler(message, change_product_price_no_sub)
             category = 'price'
             change_no_subcategory(data=price, category=category, service=admin_data[user_id]['service'])
             bot.send_message(user_id, 'Успешно')
             admin_data[user_id] = None
         else:
             message = bot.send_message(user_id, f"Введите новую цену (Только цифры): ", reply_markup=cancel_keyboard())
-            bot.register_next_step_handler(message, change_price_online_service)
+            bot.register_next_step_handler(message, change_product_price_no_sub)
     except:
         message = bot.send_message(user_id, f"Введите новую цену (Только цифры): ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_price_online_service)
+        bot.register_next_step_handler(message, change_product_price_no_sub)
+
+
+def change_product_description_no_sub(message):
+    """No subcategories/change product - description change"""
+    user_id = message.chat.id
+    try:
+        global admin_data
+        if message.text is not None:
+            description = message.text
+            category = 'description'
+            change_no_subcategory(data=description, category=category, service=admin_data[user_id]['service'])
+            bot.send_message(user_id, 'Успешно')
+            admin_data[user_id] = None
+        else:
+            message = bot.send_message(user_id, f"Введите новое описание (Только текст) : ", reply_markup=cancel_keyboard())
+            bot.register_next_step_handler(message, change_product_description_no_sub)
+    except:
+        message = bot.send_message(user_id, f"Введите новое описание (Только текст) : ", reply_markup=cancel_keyboard())
+        bot.register_next_step_handler(message, change_product_description_no_sub)
+
+
+############################################################################################################################################
 
 @bot.callback_query_handler(
-    func=lambda call: call.data.split('|')[0] == 'change_goods' and call.data.split('|')[1] in with_cat and call.data.split('|')[
-        2] == 'None')
-def change_social_service(call):
+    func=lambda call: call.data.split('|')[0] == 'change_goods' and call.data.split('|')[1] in with_cat and call.data.split('|')[2]
+                      == 'None')
+def change_product_cat_sub(call):
+    """Subcategories/change product - subcategory list"""
     user_id = call.message.chat.id
     category = call.data.split('|')[0]
     bot.delete_message(user_id, call.message.message_id)
@@ -142,7 +180,8 @@ def change_social_service(call):
 @bot.callback_query_handler(
     func=lambda call: call.data.split('|')[0] == 'change_goods' and call.data.split('|')[1] in with_cat
                                                                 and call.data.split('|')[-1] == 'None')
-def change_social_service(call):
+def change_product_pro_sub(call):
+    """Subcategories/change product - product list"""
     user_id = call.message.chat.id
     category = call.data.split('|')[2]
     service = get_subcategory(category)
@@ -152,7 +191,8 @@ def change_social_service(call):
 
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'change_goods' and call.data.split('|')[1] in with_cat)
-def change_social_service(call):
+def change_product_sub_main(call):
+    """Subcategories/change product - main page"""
     global admin_data
     user_id = call.message.chat.id
     admin_data[user_id] = {
@@ -163,19 +203,25 @@ def change_social_service(call):
     if call.data.split('|')[-1] == 'img':
         bot.delete_message(user_id, call.message.message_id)
         message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат: ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_img_social_service)
+        bot.register_next_step_handler(message, change_product_img_sub)
         return
 
     elif call.data.split('|')[-1] == 'name':
         bot.delete_message(user_id, call.message.message_id)
         message = bot.send_message(user_id, f"Введите новое название категории: ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_name_social_service)
+        bot.register_next_step_handler(message, change_product_name_sub)
         return
 
     elif call.data.split('|')[-1] == 'price':
         bot.delete_message(user_id, call.message.message_id)
         message = bot.send_message(user_id, f"Введите новую цену: ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_price_social_service)
+        bot.register_next_step_handler(message, change_product_price_sub)
+        return
+
+    elif call.data.split('|')[-1] == 'description':
+        bot.delete_message(user_id, call.message.message_id)
+        message = bot.send_message(user_id, f"Введите новое описание: ", reply_markup=cancel_keyboard())
+        bot.register_next_step_handler(message, change_product_description_sub)
         return
 
     bot.delete_message(user_id, call.message.message_id)
@@ -183,7 +229,8 @@ def change_social_service(call):
                      reply_markup=change_img_price_name(call.data))
 
 
-def change_img_social_service(message):
+def change_product_img_sub(message):
+    """Subcategories/change product - image change"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -191,11 +238,11 @@ def change_img_social_service(message):
             url_photo = message.text
             if url_photo.split(':')[0] != 'https':
                 message = bot.send_message(user_id, f"Url должен начинаться с https:// ", reply_markup=cancel_keyboard())
-                bot.register_next_step_handler(message, change_img_social_service)
+                bot.register_next_step_handler(message, change_product_img_sub)
                 return
             if requests.get(url_photo).headers['Content-Type'].split('/')[0] != 'image':
                 message = bot.send_message(user_id, f"Введите корректный url картинки: ", reply_markup=cancel_keyboard())
-                bot.register_next_step_handler(message, change_img_social_service)
+                bot.register_next_step_handler(message, change_product_img_sub)
                 return
         elif message.photo is not None:
             file_info = bot.get_file(message.photo[-1].file_id)
@@ -206,10 +253,10 @@ def change_img_social_service(message):
                 new_file.write(downloaded_file)
             admin_data[user_id]['img'] = url_photo
         else:
-            message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Только текст либо только картинку): ", reply_markup=cancel_keyboard())
-            bot.register_next_step_handler(message, change_img_social_service)
+            message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Только текст либо только картинку): ",
+                                       reply_markup=cancel_keyboard())
+            bot.register_next_step_handler(message, change_product_img_sub)
             return
-
         category = 'img'
         change_good_subcategory(data=url_photo, service=admin_data[user_id]['service'], category=category)
         bot.send_message(user_id, 'Успешно')
@@ -217,10 +264,11 @@ def change_img_social_service(message):
     except:
         message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Только текст либо только картинку): ",
                                    reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_img_social_service)
+        bot.register_next_step_handler(message, change_product_img_sub)
 
 
-def change_name_social_service(message):
+def change_product_name_sub(message):
+    """Subcategories/change product - name change"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -232,24 +280,48 @@ def change_name_social_service(message):
             admin_data[user_id] = None
         else:
             message = bot.send_message(user_id, f"Введите новое название категории (Только текст): ", reply_markup=cancel_keyboard())
-            bot.register_next_step_handler(message, change_name_social_service)
+            bot.register_next_step_handler(message, change_product_name_sub)
     except:
         message = bot.send_message(user_id, f"Введите новое название категории (Только текст): ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_name_social_service)
+        bot.register_next_step_handler(message, change_product_name_sub)
 
-def change_price_social_service(message):
+
+def change_product_price_sub(message):
+    """Subcategories/change product - price change"""
     user_id = message.chat.id
     global admin_data
     try:
         if message.text is not None:
             price = int(message.text)
+            if price < 0:
+                message = bot.send_message(user_id, f"Цена не может быть отрицательной!", reply_markup=cancel_keyboard())
+                bot.register_next_step_handler(message, change_product_price_sub)
             category = 'price'
             change_good_subcategory(data=price, category=category, service=admin_data[user_id]['service'])
             bot.send_message(user_id, 'Успешно')
             admin_data[user_id] = None
         else:
             message = bot.send_message(user_id, f"Введите новую цену (Только цифры): ", reply_markup=cancel_keyboard())
-            bot.register_next_step_handler(message, change_price_social_service)
+            bot.register_next_step_handler(message, change_product_price_sub)
     except:
         message = bot.send_message(user_id, f"Введите новую цену (Только цифры): ", reply_markup=cancel_keyboard())
-        bot.register_next_step_handler(message, change_price_social_service)
+        bot.register_next_step_handler(message, change_product_price_sub)
+
+
+def change_product_description_sub(message):
+    """Subcategories/change product - description change"""
+    user_id = message.chat.id
+    try:
+        global admin_data
+        if message.text is not None:
+            description = message.text
+            category = 'description'
+            change_good_subcategory(data=description, category=category, service=admin_data[user_id]['service'])
+            bot.send_message(user_id, 'Успешно')
+            admin_data[user_id] = None
+        else:
+            message = bot.send_message(user_id, f"Введите новое описание (Только текст) : ", reply_markup=cancel_keyboard())
+            bot.register_next_step_handler(message, change_product_description_sub)
+    except:
+        message = bot.send_message(user_id, f"Введите новое описание (Только текст) : ", reply_markup=cancel_keyboard())
+        bot.register_next_step_handler(message, change_product_description_sub)

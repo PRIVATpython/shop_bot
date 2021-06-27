@@ -14,6 +14,7 @@ def add_account_category(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'change_cat' and call.data.split('|')[2] == 'None')
 def change_cat_social(call):
+    """Only subcategories/change subcategory - subcategory list"""
     user_id = call.message.chat.id
     admin = call.data.split('|')[0]
     category = call.data.split('|')[1]
@@ -23,6 +24,7 @@ def change_cat_social(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'change_cat' and call.data.split('|')[2] != 'None')
 def change_cat(call):
+    """Only subcategories/change subcategory - main page"""
     global admin_data
     user_id = call.message.chat.id
     admin_data = {
@@ -46,6 +48,7 @@ def change_cat(call):
 
 
 def change_img(message):
+    """Only subcategories/change subcategory - image category"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -59,7 +62,6 @@ def change_img(message):
                 message = bot.send_message(user_id, f"Введите корректный url картинки: ", reply_markup=cancel_keyboard())
                 bot.register_next_step_handler(message, change_img)
                 return
-
         elif message.photo is not None:
             file_info = bot.get_file(message.photo[-1].file_id)
             downloaded_file = bot.download_file(file_info.file_path)
@@ -69,7 +71,8 @@ def change_img(message):
                 new_file.write(downloaded_file)
             admin_data[user_id]['img'] = url_photo
         else:
-            message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Только текст или только картинка): ", reply_markup=cancel_keyboard())
+            message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат (Только текст или только картинка): ",
+                                       reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, change_img)
             return
         category = 'img'
@@ -83,6 +86,7 @@ def change_img(message):
 
 
 def change_name(message):
+    """Only subcategories/change subcategory - name category"""
     user_id = message.chat.id
     try:
         global admin_data

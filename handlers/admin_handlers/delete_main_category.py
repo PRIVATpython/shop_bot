@@ -8,7 +8,7 @@ no_cat = main_category_no_subcategory()
 
 
 @bot.message_handler(regexp='^(Удалить главную категорию)$')
-def add_account_category(message):
+def delete_main_category_main(message):
     global with_cat
     with_cat = main_category_subcategory()
     global no_cat
@@ -19,7 +19,8 @@ def add_account_category(message):
 
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_main')
-def del_main_cat(call):
+def delete_main_category(call):
+    """Both/delete main category - main page"""
     user_id = call.message.chat.id
     category = call.data.split('|')[1]
     bot.delete_message(user_id, call.message.message_id)

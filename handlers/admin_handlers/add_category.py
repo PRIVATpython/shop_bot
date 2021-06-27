@@ -10,20 +10,18 @@ admin_data = {}
 def add_account_category(message):
     user_id = message.chat.id
     category = 'add_cat'
-    # bot.delete_message(user_id, call.message.message_id)
     bot.send_message(chat_id=user_id, text=f'Куда добавить категорию?', reply_markup=add_category_keyboard(category))
 
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'add_cat')
 def add_category(call):
+    """Only subcategories/add subcategory - Main page"""
     user_id = call.message.chat.id
     service = find_cat_name(call.data.split('|')[1])
     global admin_data
     admin_data[user_id] = {
-
-            'name_category': service['name_category'],
-            'high_id': call.data.split('|')[1]
-
+        'name_category': service['name_category'],
+        'high_id': call.data.split('|')[1]
     }
     bot.delete_message(user_id, call.message.message_id)
     message = bot.send_message(user_id, f"Введите название категории: ", reply_markup=cancel_keyboard())
@@ -31,6 +29,7 @@ def add_category(call):
 
 
 def set_name_category(message):
+    """Only subcategories/add subcategory - Name subcategory"""
     global admin_data
     user_id = message.chat.id
     try:
@@ -46,7 +45,9 @@ def set_name_category(message):
         message = bot.send_message(user_id, f"Введите название категории: ", reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, set_name_category)
 
+
 def set_url_img_cat(message):
+    """Only subcategories/add subcategory - Image subcategory"""
     global admin_data
     user_id = message.chat.id
     try:
@@ -68,7 +69,6 @@ def set_url_img_cat(message):
             url = filepath + message.photo[0].file_id + '.jpg'
             with open(url, 'wb') as new_file:
                 new_file.write(downloaded_file)
-            # url = open(url , 'rb')
 
         else:
             message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=cancel_keyboard())

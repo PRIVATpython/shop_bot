@@ -104,6 +104,7 @@ def subcategory_page(service):
 ➖➖➖➖➖➖➖➖➖➖➖➖"""
     return text
 
+############################################################################################################################################
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] in no_cat and call.data.split('|')[1] == 'main')
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] in no_cat and call.data.split('|')[1] == 'back')
@@ -155,13 +156,16 @@ def account_no_subcategory(call):
 
 def no_subcategory_text(service):
     text = f"""{service['name'].upper()} PREMIUM
-
+➖➖➖➖➖➖➖➖➖➖➖➖
 Цена: {service['price']} рублей
 
 Доступно: {len(service['accounts'])} шт
-"""
+
+📃 Описание: {service['description']}
+➖➖➖➖➖➖➖➖➖➖➖➖"""
     return text
 
+############################################################################################################################################
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'pay')
 def pay_test(call):

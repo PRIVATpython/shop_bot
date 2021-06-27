@@ -93,6 +93,7 @@ def change_img_price_name(callback):
     keyboard.add(types.InlineKeyboardButton(text=f'Изменить картинку', callback_data=f"{callback}|img"))
     keyboard.add(types.InlineKeyboardButton(text=f'Изменить цену', callback_data=f"{callback}|price"))
     keyboard.add(types.InlineKeyboardButton(text=f'Изменить название', callback_data=f"{callback}|name"))
+    keyboard.add(types.InlineKeyboardButton(text=f'Изменить описание', callback_data=f"{callback}|description"))
     return keyboard
 
 

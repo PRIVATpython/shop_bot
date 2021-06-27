@@ -10,7 +10,7 @@ no_cat = main_category_no_subcategory()
 
 
 @bot.message_handler(regexp='^(Удалить товар)$')
-def add_account_category(message):
+def delete_product(message):
     global with_cat
     with_cat = main_category_subcategory()
     global no_cat
@@ -22,7 +22,8 @@ def add_account_category(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_goods' and call.data.split('|')[1] in no_cat
                                                                                      and call.data.split('|')[2] == 'None')
-def del_online_service(call):
+def delete_product_no_sub_list(call):
+    """No subcategory/delete product - product list"""
     user_id = call.message.chat.id
     category = call.data.split('|')[0]
     bot.delete_message(user_id, call.message.message_id)
@@ -30,28 +31,9 @@ def del_online_service(call):
                                                                                                            call.data.split('|')[1]))
 
 
-@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_goods' and call.data.split('|')[1] in with_cat
-                                                                                     and call.data.split('|')[2] == 'None')
-def dell_social(call):
-    user_id = call.message.chat.id
-    category = call.data.split('|')[0]
-    bot.delete_message(user_id, call.message.message_id)
-    bot.send_message(user_id, f"Выберите категорию: ", reply_markup=admin_category_subcategory_keyboard(call.data.split('|')[1], category))
-
-
-@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_goods'
-                                              and call.data.split('|')[1] in with_cat and call.data.split('|')[3] == 'None')
-def dell_goods_social(call):
-    user_id = call.message.chat.id
-    category = call.data.split('|')[2]
-    service = get_subcategory(category)
-    bot.delete_message(user_id, call.message.message_id)
-    bot.send_message(user_id, f"Выберите товар: ", reply_markup=admin_service_subcategory_keyboard(call.data.split('|')[0],
-                                                                                                  service['accounts_data']))
-
-
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_goods' and call.data.split('|')[1] in no_cat)
-def del_online_service(call):
+def delete_product_no_sub(call):
+    """No subcategory/delete product - main page"""
     user_id = call.message.chat.id
     if call.data.split('|')[-1] == 'yes':
         bot.delete_message(user_id, call.message.message_id)
@@ -71,8 +53,35 @@ def del_online_service(call):
                      reply_markup=del_yes_no(call.data))
 
 
+############################################################################################################################################
+
+
+@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_goods' and call.data.split('|')[1] in with_cat
+                                                                                     and call.data.split('|')[2] == 'None')
+def delete_product_sub_cat_list(call):
+    """Subcategory/delete product - category list"""
+    user_id = call.message.chat.id
+    category = call.data.split('|')[0]
+    bot.delete_message(user_id, call.message.message_id)
+    bot.send_message(user_id, f"Выберите категорию: ", reply_markup=admin_category_subcategory_keyboard(call.data.split('|')[1], category))
+
+
+@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_goods'
+                                              and call.data.split('|')[1] in with_cat and call.data.split('|')[3] == 'None')
+def delete_product_sub_product_list(call):
+    """Subcategory/delete product - product list"""
+    user_id = call.message.chat.id
+    category = call.data.split('|')[2]
+    service = get_subcategory(category)
+    bot.delete_message(user_id, call.message.message_id)
+    bot.send_message(user_id, f"Выберите товар: ", reply_markup=admin_service_subcategory_keyboard(call.data.split('|')[0],
+                                                                                                  service['accounts_data']))
+
+
+
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_goods' and call.data.split('|')[1] in with_cat)
-def dell_goods_social_item(call):
+def delete_product_sub(call):
+    """Subcategory/delete product - main page"""
     user_id = call.message.chat.id
     if call.data.split('|')[-1] == 'yes':
         bot.delete_message(user_id, call.message.message_id)

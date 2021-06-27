@@ -17,6 +17,7 @@ def add_account_category(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'add_main' and call.data.split('|')[1] == 'with')
 def with_cat(call):
+    """Subcategory/add main category - main page"""
     user_id = call.message.chat.id
     bot.delete_message(user_id, call.message.message_id)
     message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 подкатегорию\n'
@@ -25,61 +26,68 @@ def with_cat(call):
 
 
 def name_main_cat(message):
+    """Subcategory/add main category - name main category"""
+
     user_id = message.chat.id
     try:
         global admin_data
-        if message.text is not None:
+        if message.text is not None:                                                                                                        # Введен текст (Все окей)
             name_cat = message.text
             high_id = generate_alphanum_random_string(6)
             admin_data[user_id] = {
 
-                    'high_id': high_id,
-                    'name_category': name_cat
+                'high_id': high_id,
+                'name_category': name_cat
 
             }
             message = bot.send_message(chat_id=user_id, text=f'Введите название подкатегории:', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_subcategory)
-        else:
+        else:                                                                                                                               # Введен не текст (не ок)
             message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 подкатегорию\n'
                                                              f'Введите название главной категории: ', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_main_cat)
-    except:
+    except:                                                                                                                                 # При вводе данных что-то пошло не так (все не ок)
         message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 подкатегорию\n'
                                                          f'Введите название главной категории: ', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, name_main_cat)
 
+
 def name_subcategory(message):
+    """Subcategory/add main category - name subcategory"""
     user_id = message.chat.id
     try:
         global admin_data
-        if message.text is not None:
+        if message.text is not None:                                                                                                        # Введен текст (Все окей)
             subcategory_name = message.text
             admin_data[user_id]['name'] = subcategory_name
-            message = bot.send_message(chat_id=user_id, text=f'Введите url картинки или отправтье картинку в чат:', reply_markup=cancel_keyboard())
+            message = bot.send_message(chat_id=user_id, text=f'Введите url картинки или отправтье картинку в чат:',
+                                       reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, url_subcategory)
-        else:
+        else:                                                                                                                               # Введен не текст (не ок)
             message = bot.send_message(chat_id=user_id, text=f'Введите название подкатегории:', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_subcategory)
-    except:
+    except:                                                                                                                                 # При вводе данных что-то пошло не так (все не окей)
         message = bot.send_message(chat_id=user_id, text=f'Введите название подкатегории:', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, name_subcategory)
 
+
 def url_subcategory(message):
+    """Subcategory/add main category - image page"""
     user_id = message.chat.id
     try:
         global admin_data
-        if message.text is not None:
+        if message.text is not None:                                                                                                        # Введен текст (Почти окей)
             url_photo = message.text
-            if url_photo.split(':')[0] != 'https':
+            if url_photo.split(':')[0] != 'https':                                                                                          # Это не ссылка (не ок)
                 message = bot.send_message(user_id, f"Url должен начинаться с https:// ", reply_markup=cancel_keyboard())
                 bot.register_next_step_handler(message, url_no_subcategory_photo)
                 return
-            if requests.get(url_photo).headers['Content-Type'].split('/')[0] != 'image':
+            if requests.get(url_photo).headers['Content-Type'].split('/')[0] != 'image':                                                    # Ссылка не ведет на изображение (не ок)
                 message = bot.send_message(user_id, f"Введите корректный url картинки: ", reply_markup=cancel_keyboard())
                 bot.register_next_step_handler(message, url_no_subcategory_photo)
                 return
             admin_data[user_id]['img'] = url_photo
-        elif message.photo is not None:
+        elif message.photo is not None:                                                                                                     # Введена картинка (все ок)
             file_info = bot.get_file(message.photo[-1].file_id)
             downloaded_file = bot.download_file(file_info.file_path)
             filepath = 'img/'
@@ -87,23 +95,24 @@ def url_subcategory(message):
             with open(url, 'wb') as new_file:
                 new_file.write(downloaded_file)
             admin_data[user_id]['img'] = url
-        else:
-            message = bot.send_message(chat_id=user_id, text=f'Введите url картинки или отправтье картинку в чат:', reply_markup=cancel_keyboard())
+        else:                                                                                                                               # Введенно что то другое(не ок)
+            message = bot.send_message(chat_id=user_id, text=f'Введите url картинки или отправтье картинку в чат:',
+                                       reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, url_subcategory)
             return
-    except:
+        add_new_cat_subcategory(admin_data[user_id])
+        admin_data[user_id] = None
+        bot.send_message(user_id, 'Успешно')
+    except:                                                                                                                                 # При вводе данных что-то пошло не так (все не окей)
         message = bot.send_message(chat_id=user_id, text=f'Введите url картинки или отправтье картинку в чат:',
                                    reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, url_subcategory)
 
-        # Закончил здесь
-    add_new_cat_subcategory(admin_data[user_id])
-    admin_data[user_id] = None
-    bot.send_message(user_id, 'Успешно')
-
+############################################################################################################################################
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'add_main' and call.data.split('|')[1] == 'without')
 def with_cat(call):
+    """No subcategory/add main category - main page"""
     user_id = call.message.chat.id
     bot.delete_message(user_id, call.message.message_id)
     message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 товар\n'
@@ -112,6 +121,7 @@ def with_cat(call):
 
 
 def name_no_subcategory(message):
+    """No subcategory/add main category - name main category"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -122,8 +132,8 @@ def name_no_subcategory(message):
 
             admin_data[user_id] = {
 
-                    'high_id': high_id,
-                    'name_category': name_cat
+                'high_id': high_id,
+                'name_category': name_cat
 
             }
             message = bot.send_message(chat_id=user_id, text=f'Введите название товара:', reply_markup=cancel_keyboard())
@@ -138,7 +148,9 @@ def name_no_subcategory(message):
                                                          f'Введите название главной категории: ', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, name_no_subcategory)
 
+
 def name_no_subcategory_goods(message):
+    """No subcategory/add main category - name product"""
     global admin_data
     user_id = message.chat.id
     try:
@@ -155,7 +167,9 @@ def name_no_subcategory_goods(message):
         message = bot.send_message(chat_id=user_id, text=f'Введите название товара:', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, name_no_subcategory_goods)
 
+
 def no_subcategory_price(message):
+    """No subcategory/add main category - price product"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -179,7 +193,9 @@ def no_subcategory_price(message):
         message = bot.send_message(chat_id=user_id, text=f'Введите цену:', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, no_subcategory_price)
 
+
 def url_no_subcategory_photo(message):
+    """No subcategory/add main category - images product"""
     user_id = message.chat.id
     try:
         global admin_data
@@ -196,7 +212,6 @@ def url_no_subcategory_photo(message):
                 bot.register_next_step_handler(message, url_no_subcategory_photo)
                 return
             admin_data[user_id]['img'] = url
-
         elif message.photo is not None:
             file_info = bot.get_file(message.photo[-1].file_id)
             downloaded_file = bot.download_file(file_info.file_path)
@@ -208,7 +223,6 @@ def url_no_subcategory_photo(message):
         else:
             message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат:  ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, url_no_subcategory_photo)
-
         add_new_no_subcategory(admin_data[user_id])
         admin_data[user_id] = None
         bot.send_message(user_id, 'Успешно')

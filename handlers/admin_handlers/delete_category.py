@@ -4,14 +4,15 @@ from db import del_cat_subcategory, get_subcategory
 
 
 @bot.message_handler(regexp='^(Удалить подкатегорию)$')
-def add_account_category(message):
+def delete_subcategory_main(message):
     user_id = message.chat.id
     category = 'del_cat'
     bot.send_message(chat_id=user_id, text=f'Выберите категорию: ', reply_markup=add_category_keyboard(category))
 
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_cat' and call.data.split('|')[2] == 'None')
-def dell_social(call):
+def delete_subcategory_list(call):
+    """Only subcategories/delete subcategory - subcategory list"""
     user_id = call.message.chat.id
     category = call.data.split('|')[0]
     bot.delete_message(user_id, call.message.message_id)
@@ -19,7 +20,8 @@ def dell_social(call):
 
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'del_cat' and call.data.split('|')[2] != 'None')
-def delete_cat_social(call):
+def delete_subcategory(call):
+    """Only subcategories/delete subcategory - main page"""
     user_id = call.message.chat.id
     if call.data.split('|')[-1] == 'yes':
         bot.delete_message(user_id, call.message.message_id)
