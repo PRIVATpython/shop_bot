@@ -32,12 +32,5 @@ def get_user(user_id):
     user = db.users.find_one({'user_id': user_id})
     return user
 
-#TEST-------------------------------------------------
-def add_test(high_id):
-    x = db.social_network.find_one({'high_id': high_id})
-    return x
-
-if __name__ == '__main__':
-    x = add_test('social')
 
 

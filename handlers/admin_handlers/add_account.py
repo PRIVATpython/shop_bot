@@ -69,11 +69,12 @@ def generator_accounts(call):
         message = bot.send_message(user_id,
                                    f"Сколько аккаунтов добавить? (Введите цифру)")
         bot.register_next_step_handler(message, generator_normal_account)
+        return
     elif call.data.split('|')[2] == 'cd_key':
         message = bot.send_message(user_id,
                                    f"Сколько ключей добавить? (Введите цифру)")
         bot.register_next_step_handler(message, generator_cd_key)
-
+        return
 
 ############################################################################################################################################
 
@@ -153,10 +154,12 @@ def generator_normal_account(message):
                 message = bot.send_message(user_id,
                                            f"Количество не может быть равно 0 или быть отрицательным")
                 bot.register_next_step_handler(message, generator_normal_account)
+                return
             elif count > 150:
                 message = bot.send_message(user_id,
                                            f"Не больше 150 аккаунтов за раз")
                 bot.register_next_step_handler(message, generator_normal_account)
+                return
             login_list = generator_normal_acc(count)
             callback = get_user(message.chat.id)
             callback = callback['temp_data_admin']
@@ -171,6 +174,7 @@ def generator_normal_account(message):
             message = bot.send_message(user_id,
                                        f"Сколько аккаунтов добавить? (Введите цифру)")
             bot.register_next_step_handler(message, generator_normal_account)
+            return
     except:
         message = bot.send_message(user_id,
                                    f"Сколько аккаунтов добавить? (Введите цифру)")
@@ -187,10 +191,12 @@ def generator_cd_key(message):
                 message = bot.send_message(user_id,
                                            f"Количество не может быть равно 0 или быть отрицательным")
                 bot.register_next_step_handler(message, generator_cd_key)
+                return
             elif count > 150:
                 message = bot.send_message(user_id,
                                            f"Не больше 150 аккаунтов за раз")
                 bot.register_next_step_handler(message, generator_cd_key)
+                return
             key_list = generate_cd_key(count)
             callback = get_user(message.chat.id)
             callback = callback['temp_data_admin']
@@ -205,6 +211,7 @@ def generator_cd_key(message):
             message = bot.send_message(user_id,
                                        f"Сколько ключей добавить? (Введите цифру)")
             bot.register_next_step_handler(message, generator_cd_key)
+            return
     except:
         message = bot.send_message(user_id,
                                    f"Сколько ключей добавить? (Введите цифру)")

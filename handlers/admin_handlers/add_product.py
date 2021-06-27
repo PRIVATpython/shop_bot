@@ -78,12 +78,14 @@ def set_product_price_no_sub(message):
             if price < 0:
                 message = bot.send_message(user_id, f"Цена не может быть отрицательной!:  ", reply_markup=cancel_keyboard())
                 bot.register_next_step_handler(message, set_product_price_no_sub)
+                return
             admin_data[user_id]['price'] = price
             message = bot.send_message(user_id, f"Введите описание товара:  ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_description_no_sub)
         else:
             message = bot.send_message(user_id, f"Введите цену (Только цифры): ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_price_no_sub)
+            return
     except:
         message = bot.send_message(user_id, f"Введите цену (Только цифры): ", reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, set_product_price_no_sub)
@@ -99,9 +101,11 @@ def set_product_description_no_sub(message):
             admin_data[user_id]['description'] = description
             message = bot.send_message(user_id, f"Введите url картинки:  ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_img_no_sub)
+            return
         else:
             message = bot.send_message(user_id, f"Введите описание (Только текст): ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_description_no_sub)
+            return
     except:
         message = bot.send_message(user_id, f"Введите описание (Только текст): ", reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, set_product_description_no_sub)
@@ -137,6 +141,7 @@ def set_product_img_no_sub(message):
                                                 f" изображения начинающаяся с https:// или фото ):  ",
                                        reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_img_no_sub)
+            return
 
         add_new_no_subcategory(admin_data[user_id])
         admin_data[user_id] = None
@@ -170,10 +175,8 @@ def add_product_sub(call):
     user_id = call.message.chat.id
     high_id = call.data.split('|')[2]
     admin_data[user_id] = {
-
             'category': call.data.split('|')[1],
             'high_id': high_id
-
     }
     bot.delete_message(user_id, call.message.message_id)
     message = bot.send_message(user_id, f"Введите название товара: ", reply_markup=cancel_keyboard())
@@ -190,9 +193,11 @@ def set_product_name_sub(message):
             admin_data[user_id]['name'] = name
             message = bot.send_message(user_id, f"Введите цену: ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_price_sub)
+            return
         else:
             message = bot.send_message(user_id, f"Введите название товара (Только текст): ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_name_sub)
+            return
     except:
         message = bot.send_message(user_id, f"Введите название товара (Только текст): ", reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, set_product_name_sub)
@@ -208,13 +213,15 @@ def set_product_price_sub(message):
             if price < 0:
                 message = bot.send_message(user_id, f"Цена не может быть отрицательной!", reply_markup=cancel_keyboard())
                 bot.register_next_step_handler(message, set_product_price_sub)
-
+                return
             admin_data[user_id]['price'] = price
             message = bot.send_message(user_id, f"Введите описание: ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_description_sub)
+            return
         else:
             message = bot.send_message(user_id, f"Введите цену (Только цифры): ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_price_sub)
+            return
     except:
         message = bot.send_message(user_id, f"Введите цену (Только цифры): ", reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, set_product_price_sub)
@@ -225,15 +232,16 @@ def set_product_description_sub(message):
     global admin_data
     user_id = message.chat.id
     try:
-
         if message.text is not None:
             description = message.text
             admin_data[user_id]['description'] = description
             message = bot.send_message(user_id, f"Введите url картинки или пришлите картинку в чат: ", reply_markup=clone_img_keyboard())
             bot.register_next_step_handler(message, set_product_image_sub)
+            return
         else:
             message = bot.send_message(user_id, f"Введите описание (Только текст): ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, set_product_description_sub)
+            return
     except:
         message = bot.send_message(user_id, f"Введите описание (Только текст): ", reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, set_product_description_sub)

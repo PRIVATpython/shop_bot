@@ -3,22 +3,70 @@ from db import get_admin_data_no_subcategory, main_category_no_subcategory_data
 from db import main_category_subcategory_data, get_category_subcategory
 
 
+# def main_admin_keyboard():
+#     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+#     product = types.KeyboardButton('Добавить аккаунты')
+#     new_goods = types.KeyboardButton('Добавить новый товар')
+#     new_cat = types.KeyboardButton('Добавить новую подкатегорию')
+#     delete_goods = types.KeyboardButton('Удалить товар')
+#     delete_cat = types.KeyboardButton('Удалить подкатегорию')
+#     change_cat = types.KeyboardButton('Изменить подкатегорию')
+#     change_goods = types.KeyboardButton('Изменить товар')
+#     add_main = types.KeyboardButton('Добавить главную категорию')
+#     del_main = types.KeyboardButton('Удалить главную категорию')
+#     keyboard.add(product)
+#     keyboard.add(new_goods, delete_goods)
+#     keyboard.add(new_cat, delete_cat)
+#     keyboard.add(change_cat, change_goods)
+#     keyboard.add(add_main, del_main)
+#     return keyboard
+
 def main_admin_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    add = types.KeyboardButton('Добавить')
+    delete = types.KeyboardButton('Удалить')
+    chande = types.KeyboardButton('Изменить')
+    keyboard.add(add)
+    keyboard.add(delete)
+    keyboard.add(chande)
+    return keyboard
+
+def add_admin_keyboard():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     product = types.KeyboardButton('Добавить аккаунты')
     new_goods = types.KeyboardButton('Добавить новый товар')
     new_cat = types.KeyboardButton('Добавить новую подкатегорию')
+    add_main = types.KeyboardButton('Добавить главную категорию')
+    back = types.KeyboardButton('Назад')
+    keyboard.add(product)
+    keyboard.add(new_goods)
+    keyboard.add(new_cat)
+    keyboard.add(add_main)
+    keyboard.add(back)
+    return keyboard
+
+
+def delete_admin_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     delete_goods = types.KeyboardButton('Удалить товар')
     delete_cat = types.KeyboardButton('Удалить подкатегорию')
-    change_cat = types.KeyboardButton('Изменить подкатегорию')
+    delete_main = types.KeyboardButton('Удалить главную категорию')
+    back = types.KeyboardButton('Назад')
+    keyboard.add(delete_goods)
+    keyboard.add(delete_cat)
+    keyboard.add(delete_main)
+    keyboard.add(back)
+    return keyboard
+
+
+def change_admin_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     change_goods = types.KeyboardButton('Изменить товар')
-    add_main = types.KeyboardButton('Добавить главную категорию')
-    del_main = types.KeyboardButton('Удалить главную категорию')
-    keyboard.add(product)
-    keyboard.add(new_goods, delete_goods)
-    keyboard.add(new_cat, delete_cat)
-    keyboard.add(change_cat, change_goods)
-    keyboard.add(add_main, del_main)
+    change_cat = types.KeyboardButton('Изменить подкатегорию')
+    back = types.KeyboardButton('Назад')
+    keyboard.add(change_goods)
+    keyboard.add(change_cat)
+    keyboard.add(back)
     return keyboard
 
 

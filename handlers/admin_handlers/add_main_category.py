@@ -42,10 +42,12 @@ def name_main_cat(message):
             }
             message = bot.send_message(chat_id=user_id, text=f'Введите название подкатегории:', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_subcategory)
+            return
         else:                                                                                                                               # Введен не текст (не ок)
             message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 подкатегорию\n'
                                                              f'Введите название главной категории: ', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_main_cat)
+            return
     except:                                                                                                                                 # При вводе данных что-то пошло не так (все не ок)
         message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 подкатегорию\n'
                                                          f'Введите название главной категории: ', reply_markup=cancel_keyboard())
@@ -63,9 +65,11 @@ def name_subcategory(message):
             message = bot.send_message(chat_id=user_id, text=f'Введите url картинки или отправтье картинку в чат:',
                                        reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, url_subcategory)
+            return
         else:                                                                                                                               # Введен не текст (не ок)
             message = bot.send_message(chat_id=user_id, text=f'Введите название подкатегории:', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_subcategory)
+            return
     except:                                                                                                                                 # При вводе данных что-то пошло не так (все не окей)
         message = bot.send_message(chat_id=user_id, text=f'Введите название подкатегории:', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, name_subcategory)
@@ -110,6 +114,7 @@ def url_subcategory(message):
 
 ############################################################################################################################################
 
+
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'add_main' and call.data.split('|')[1] == 'without')
 def with_cat(call):
     """No subcategory/add main category - main page"""
@@ -125,16 +130,12 @@ def name_no_subcategory(message):
     user_id = message.chat.id
     try:
         global admin_data
-
         if message.text is not None:
             name_cat = message.text
             high_id = generate_alphanum_random_string(6)
-
             admin_data[user_id] = {
-
                 'high_id': high_id,
                 'name_category': name_cat
-
             }
             message = bot.send_message(chat_id=user_id, text=f'Введите название товара:', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_no_subcategory_goods)
@@ -143,6 +144,7 @@ def name_no_subcategory(message):
             message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 товар\n'
                                                              f'Введите название главной категории: ', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_no_subcategory)
+            return
     except:
         message = bot.send_message(chat_id=user_id, text=f'Что бы добавить новую категорию, добавтье хотя бы 1 товар\n'
                                                          f'Введите название главной категории: ', reply_markup=cancel_keyboard())
@@ -163,6 +165,7 @@ def name_no_subcategory_goods(message):
         else:
             message = bot.send_message(chat_id=user_id, text=f'Введите название товара:', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, name_no_subcategory_goods)
+            return
     except:
         message = bot.send_message(chat_id=user_id, text=f'Введите название товара:', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, name_no_subcategory_goods)
@@ -189,6 +192,7 @@ def no_subcategory_price(message):
         else:
             message = bot.send_message(chat_id=user_id, text=f'Введите цену:', reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, no_subcategory_price)
+            return
     except:
         message = bot.send_message(chat_id=user_id, text=f'Введите цену:', reply_markup=cancel_keyboard())
         bot.register_next_step_handler(message, no_subcategory_price)
@@ -223,6 +227,7 @@ def url_no_subcategory_photo(message):
         else:
             message = bot.send_message(user_id, f"Введите url картинки или отправтье картинку в чат:  ", reply_markup=cancel_keyboard())
             bot.register_next_step_handler(message, url_no_subcategory_photo)
+            return
         add_new_no_subcategory(admin_data[user_id])
         admin_data[user_id] = None
         bot.send_message(user_id, 'Успешно')
