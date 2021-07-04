@@ -33,5 +33,12 @@ def get_user(user_id):
     return user
 
 
+def test():
+    db.test.update_many({"name_category": "Putint"}, {"$set": {"name_category": "Putint"}})
+
+
+if __name__ == '__main__':
+    test()
+
 
 

@@ -108,6 +108,8 @@ def change_good_subcategory(data, category, service):
 def del_main_category(high_id):
     db.social_network.remove({'high_id': high_id})
 
+def change_main_category_sub(old_name, new_name):
+    db.social_network.update_many({"name_category": old_name}, {"$set": {"name_category": new_name}})
 #give_account-----------------------------------------------------------
 
 

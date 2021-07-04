@@ -65,17 +65,27 @@ def subcategory_keyboard(cat, category_acc):
 def pay_bonus_keyboard(category, user_id):
     keyboard = types.InlineKeyboardMarkup()
     button = types.InlineKeyboardButton(text='Оплатить', callback_data=f'pay|{category}|pay')
+    qiwi = types.InlineKeyboardButton(text='QIWI', callback_data=f'pay|{category}|qiwi')
     data_user = get_user(user_id=user_id)
     if data_user['temp_cart']['bonus'] > 0:
         buy_bonus = types.InlineKeyboardButton(text=f'Использовать бонусы ({data_user["temp_cart"]["bonus"]} бонусов)',
                                                callback_data=f'pay|{category}|pay_bonus')
         keyboard.add(buy_bonus)
     keyboard.add(button)
+    keyboard.add(qiwi)
     return keyboard
 
 
 def pay_keyboard(category):
     keyboard = types.InlineKeyboardMarkup()
     button = types.InlineKeyboardButton(text='Оплатить', callback_data=f'pay|{category}|pay')
+    qiwi = types.InlineKeyboardButton(text='QIWI', callback_data=f'pay|{category}|qiwi')
+    keyboard.add(button)
+    keyboard.add(qiwi)
+    return keyboard
+
+def check_keyboard(category, pay_service):
+    keyboard = types.InlineKeyboardMarkup()
+    button = types.InlineKeyboardButton(text='Проверить оплату', callback_data=f'pay_check|{category}|{pay_service}')
     keyboard.add(button)
     return keyboard

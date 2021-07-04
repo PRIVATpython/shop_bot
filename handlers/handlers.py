@@ -1,13 +1,13 @@
 import telebot
 from settings import TELEGRAM_KEY
 from keyboards import (product_keyboard, category_subcategory_keyboard, subcategory_keyboard, pay_keyboard,
-                       account_no_subcategory_keyboard, buy_keyboard, pay_bonus_keyboard)
+                       account_no_subcategory_keyboard, buy_keyboard, pay_bonus_keyboard, check_keyboard)
 from db import get_subcategory_data, get_subcategory, give_account_no_subcategory, main_category_subcategory, give_account_subcategory
 from db import main_category_no_subcategory, get_data_account_no_subcategory
 from db import get_temp_cart
-from db import get_bonus, give_bonus
+from db import get_bonus, give_bonus, add_comment_temp_cart
 from db import get_or_create_user, set_temp_cart, set_count_temp_cart, set_default_temp_cart
-
+from utilites import generate_alphanum_random_string
 
 bot = telebot.TeleBot(TELEGRAM_KEY, parse_mode='MARKDOWN')
 with_cat = main_category_subcategory()
@@ -167,6 +167,13 @@ def no_subcategory_text(service):
 
 ############################################################################################################################################
 
+@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'qiwi')
+def pay_qiwi(call):
+    user_id = call.message.chat.id
+    temp_cart = get_temp_cart(user_id)
+    bot.delete_message(user_id, call.message.message_id)
+    keyboard = check_keyboard(call.data.split('|')[1], "qiwi")
+    bot.send_message(user_id, f"Переведите на QIWI кошелек \n+79006292609\n{temp_cart['all_price']} рублей\nОБЯЗАТЕЛЬНО УКАЗАТЬ КОМЕНТАРИЙ:\n{temp_cart['comment_pay']}", reply_markup=keyboard)
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'pay')
 def pay_test(call):
@@ -191,6 +198,8 @@ def pay_handler(call):
         get_bonus(user_id)
         reply_markup = pay_keyboard(call.data.split('|')[1])
     else:
+        comment = generate_alphanum_random_string(6)
+        add_comment_temp_cart(user_id, comment)
         reply_markup = pay_bonus_keyboard(call.data.split('|')[1], user_id)
     temp_cart = get_temp_cart(user_id)
     bot.delete_message(user_id, call.message.message_id)

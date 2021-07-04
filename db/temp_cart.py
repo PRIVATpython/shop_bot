@@ -61,3 +61,6 @@ def get_temp_cart(user_id):
     user = db.users.find_one({'user_id': user_id})
     temp_cart = user['temp_cart']
     return temp_cart
+
+def add_comment_temp_cart(user_id, comment):
+    db.users.update_one({"user_id": user_id}, {"$set": {"temp_cart.comment_pay": comment}})

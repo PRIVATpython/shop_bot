@@ -4,4 +4,6 @@ MONGO_DB_LINK = 'mongodb+srv://Kyle-krn:I1ywdLS6oHGxmNV7@cluster0.9htu0.mongodb.
 
 MONGO_DB = 'shop_tg'
 
+QIWI_TOKEN = '82417620176a887dc01f651d60511f34'
+
 

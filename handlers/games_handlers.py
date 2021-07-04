@@ -4,12 +4,19 @@ from db import get_user, set_rate_db, set_prize_bonus
 
 temp_data = {}
 
-@bot.message_handler(regexp='^(Игры)$')
+
+@bot.message_handler(regexp='^(⚙ Мои баллы)$')
 def games_main(message):
     bot.send_message(chat_id=message.chat.id, text='Во что хотите сыграть?', reply_markup=main_games_keyboard())
 
 
-@bot.message_handler(regexp='^(Рулетка)$')
+@bot.message_handler(regexp='^(Мои бонусы)$')
+def games_main(message):
+    user_data = get_user(message.chat.id)
+    bot.send_message(chat_id=message.chat.id, text=f'У вас {user_data["temp_cart"]["bonus"]} боунсов\nС каждой покупки вам начисляется 5% с потраченной суммы!', reply_markup=main_games_keyboard())
+
+
+@bot.message_handler(regexp='^(Выиграй еще больше бонусов в рулетку!)$')
 @bot.callback_query_handler(func=lambda call: call.data == 'roulette_finish')
 def games_main(message):
     try:
@@ -75,7 +82,6 @@ def roulette_games(call):
     keyboard, key_list = encode_roulette_keyboard(int(lvl))
     global temp_data
     temp_data[user_id]['key_list'] = key_list
-    print(key_list)
     temp_data[user_id]['lvl'] = lvl
     rate = temp_data[user_id]['rate']
     bot.send_message(user_id, text=f'Ваша ставка {rate}\nВыберите из списка ниже: ', reply_markup=keyboard)

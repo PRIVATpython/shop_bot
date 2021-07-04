@@ -50,9 +50,11 @@ def change_admin_keyboard():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     change_goods = types.KeyboardButton('Изменить товар')
     change_cat = types.KeyboardButton('Изменить подкатегорию')
+    change_main_cat = types.KeyboardButton('Изменить главную категорию')
     back = types.KeyboardButton('Назад')
     keyboard.add(change_goods)
     keyboard.add(change_cat)
+    keyboard.add(change_main_cat)
     keyboard.add(back)
     return keyboard
 

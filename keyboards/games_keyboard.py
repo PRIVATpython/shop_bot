@@ -4,9 +4,11 @@ import random
 
 def main_games_keyboard():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    roulette = types.KeyboardButton('Рулетка')
+    roulette = types.KeyboardButton('Выиграй еще больше бонусов в рулетку!')
+    bonus = types.KeyboardButton('Мои бонусы')
     back = types.KeyboardButton('Назад к главному меню')
     keyboard.add(roulette)
+    keyboard.add(bonus)
     keyboard.add(back)
     return keyboard
 
@@ -19,9 +21,9 @@ def game_yes_no():
 
 def lvl_keyboard():
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton(text='Легко (Выигрыш x0.5)', callback_data=f'roulette_lvl|6'))
-    keyboard.add(types.InlineKeyboardButton(text='Cредне (Выигрыш x2)', callback_data=f'roulette_lvl|9'))
-    keyboard.add(types.InlineKeyboardButton(text='Сложно (Выигрыш x3)', callback_data=f'roulette_lvl|12'))
+    keyboard.add(types.InlineKeyboardButton(text='Легко (Выигрыш x1.25 | Шанс 16%)', callback_data=f'roulette_lvl|6'))
+    keyboard.add(types.InlineKeyboardButton(text='Cредне (Выигрыш x2 | Шанс 11%)', callback_data=f'roulette_lvl|9'))
+    keyboard.add(types.InlineKeyboardButton(text='Сложно (Выигрыш x3 | Шанс 8%)', callback_data=f'roulette_lvl|12'))
     return keyboard
 
 def encode_roulette_keyboard(lvl):

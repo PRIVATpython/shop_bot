@@ -75,6 +75,9 @@ def find_no_subcategory_name(high_id):
 def del_main_no_subcategory(high_id):
     db.online_service.remove({'high_id': high_id})
 
+def change_main_category_no_sub(old_name, new_name):
+    db.online_service.update_many({"name_category": old_name}, {"$set": {"name_category": new_name}})
+
 # give_account----------------------------------------------------------------------------
 
 
@@ -102,7 +105,6 @@ def my_purchases_no_sub(service, user_id, accounts):
     del service_data['high_id']
     service_data['accounts'] = []
     service_data['callback'] = f'purch|{service_data["id"]}'
-    # print(service_data)
     user_data = db.users.find_one({'user_id': user_id, 'buy.id': service_data['id']})
     if user_data is None:
         db.users.update_one({'user_id': user_id}, {'$push': {'buy': service_data}})
