@@ -29,7 +29,9 @@ def cancel_input(call):
     bot.clear_step_handler_by_chat_id(chat_id=call.message.chat.id)
     bot.delete_message(user_id, call.message.message_id)
 
+
 ############################################################################################################################################
+
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'add_acc'
                                               and call.data.split('|')[1] in no_cat

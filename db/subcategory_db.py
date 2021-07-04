@@ -121,27 +121,22 @@ def give_account_subcategory(user_id):
         account = accounts_list.pop(0)
         accounts.append(account)
         db.social_network.update_one({"accounts_data.name": temp_cart['product']}, {'$set': {"accounts_data.$.accounts": accounts_list}})
+    my_purchases(temp_cart['product'], user_id, accounts)
     return accounts
 
 
-# Список покупок нужно переделывать полностью
 def my_purchases(service, user_id, accounts):
-    service_data = db.social_network.find_one({"accounts_data.name": service})
     product_data = db.social_network.find_one({"accounts_data.name": service}, {"accounts_data.$": 1})
-    # print(service_data)
-    del service_data['_id']
-    del service_data['img']
-    service_data['accounts_data'] = []
-    user_data = db.users.find_one({'user_id': user_id, 'buy.sub.id': service_data['id']})
-    if user_data is None:
-        db.users.update_one({'user_id': user_id}, {'$push': {'buy.sub': service_data}})
     product_data = product_data['accounts_data'][0]
     del product_data['price']
     del product_data['description']
     del product_data['img']
     product_data['accounts'] = []
-    user_data = db.users.find_one({'user_id': user_id, 'buy.sub.accounts_data.id': product_data['id']})
+    product_data['callback'] = f'purch|{product_data["id"]}'
+    print(product_data)
+    user_data = db.users.find_one({'user_id': user_id, 'buy.id': product_data['id']})
     if user_data is None:
-        db.users.update_one({'user_id': user_id, 'buy.sub.id': service_data['id']}, {'$push': {'buy.sub.$.accounts_data': product_data}})
-
+        db.users.update_one({'user_id': user_id}, {'$push': {'buy': product_data}})
+    for item in accounts:
+        db.users.update_one({'user_id': user_id}, {'$push': {'buy.$[i].accounts': item}}, array_filters=[{"i.id": product_data['id']}])
 

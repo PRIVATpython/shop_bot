@@ -167,6 +167,7 @@ def no_subcategory_text(service):
 
 ############################################################################################################################################
 
+
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'pay')
 def pay_test(call):
     """Pay handler - Final pay"""

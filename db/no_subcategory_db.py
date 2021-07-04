@@ -88,5 +88,25 @@ def give_account_no_subcategory(user_id):
         account = accounts_list.pop(0)
         accounts.append(account)
         db.online_service.update({'name': temp_cart['product']}, {'$set': {'accounts': accounts_list}})
+    my_purchases_no_sub(service['name'], user_id, accounts)
     return accounts
+
+
+def my_purchases_no_sub(service, user_id, accounts):
+    service_data = db.online_service.find_one({"name": service})
+    del service_data['_id']
+    del service_data['img']
+    del service_data['description']
+    del service_data['price']
+    del service_data['name_category']
+    del service_data['high_id']
+    service_data['accounts'] = []
+    service_data['callback'] = f'purch|{service_data["id"]}'
+    # print(service_data)
+    user_data = db.users.find_one({'user_id': user_id, 'buy.id': service_data['id']})
+    if user_data is None:
+        db.users.update_one({'user_id': user_id}, {'$push': {'buy': service_data}})
+    for item in accounts:
+        db.users.update_one({'user_id': user_id}, {'$push': {'buy.$[i].accounts': item}}, array_filters=[{"i.id": service_data['id']}])
+
 

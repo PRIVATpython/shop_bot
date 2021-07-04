@@ -3,25 +3,8 @@ from db import get_admin_data_no_subcategory, main_category_no_subcategory_data
 from db import main_category_subcategory_data, get_category_subcategory
 
 
-# def main_admin_keyboard():
-#     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-#     product = types.KeyboardButton('Добавить аккаунты')
-#     new_goods = types.KeyboardButton('Добавить новый товар')
-#     new_cat = types.KeyboardButton('Добавить новую подкатегорию')
-#     delete_goods = types.KeyboardButton('Удалить товар')
-#     delete_cat = types.KeyboardButton('Удалить подкатегорию')
-#     change_cat = types.KeyboardButton('Изменить подкатегорию')
-#     change_goods = types.KeyboardButton('Изменить товар')
-#     add_main = types.KeyboardButton('Добавить главную категорию')
-#     del_main = types.KeyboardButton('Удалить главную категорию')
-#     keyboard.add(product)
-#     keyboard.add(new_goods, delete_goods)
-#     keyboard.add(new_cat, delete_cat)
-#     keyboard.add(change_cat, change_goods)
-#     keyboard.add(add_main, del_main)
-#     return keyboard
-
 def main_admin_keyboard():
+    """Главная админская клавиатура"""
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     add = types.KeyboardButton('Добавить')
     delete = types.KeyboardButton('Удалить')
@@ -31,7 +14,9 @@ def main_admin_keyboard():
     keyboard.add(chande)
     return keyboard
 
+
 def add_admin_keyboard():
+    """Подкатегория/добавить - админская клавиатура"""
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     product = types.KeyboardButton('Добавить аккаунты')
     new_goods = types.KeyboardButton('Добавить новый товар')
@@ -47,6 +32,7 @@ def add_admin_keyboard():
 
 
 def delete_admin_keyboard():
+    """Подкатегория/удалить - админская клавиатура"""
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     delete_goods = types.KeyboardButton('Удалить товар')
     delete_cat = types.KeyboardButton('Удалить подкатегорию')
@@ -60,6 +46,7 @@ def delete_admin_keyboard():
 
 
 def change_admin_keyboard():
+    """Подкатегория/изменить - админская клавиатура"""
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     change_goods = types.KeyboardButton('Изменить товар')
     change_cat = types.KeyboardButton('Изменить подкатегорию')
@@ -71,6 +58,7 @@ def change_admin_keyboard():
 
 
 def admin_product_keyboard(category):
+    """Генерит клавиатуру из всех типов(Subcategory - No subcategory)"""
     keyboard = types.InlineKeyboardMarkup()
     with_cat = main_category_subcategory_data()
     no_cat = main_category_no_subcategory_data()
@@ -82,6 +70,7 @@ def admin_product_keyboard(category):
 
 
 def admin_no_subcategory_keboard(category, category_goods):
+    """Генерит клавиатуру товаров |No subcategory"""
     keyboard = types.InlineKeyboardMarkup()
     keyboard_data = get_admin_data_no_subcategory(category_goods)
     for item in keyboard_data:
@@ -91,6 +80,7 @@ def admin_no_subcategory_keboard(category, category_goods):
 
 
 def admin_category_subcategory_keyboard(cat, category):
+    """Генерит клавиатуру подкатегорий |Subcategory"""
     keyboard = types.InlineKeyboardMarkup()
     keyboard_data = get_category_subcategory(cat)
     for item in keyboard_data:
@@ -102,6 +92,7 @@ def admin_category_subcategory_keyboard(cat, category):
 
 
 def admin_service_subcategory_keyboard(category, service):
+    """Генерит клавиатуру товаров |Subcategory"""
     keyboard = types.InlineKeyboardMarkup()
     try:
         for item in service:
@@ -115,6 +106,7 @@ def admin_service_subcategory_keyboard(category, service):
 
 
 def add_category_keyboard(category):
+    """Клавитаура для Добавить подкатегорию"""
     keyboard = types.InlineKeyboardMarkup()
     with_cat = main_category_subcategory_data()
     for item in with_cat:
