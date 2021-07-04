@@ -19,12 +19,14 @@ def game_yes_no():
     keyboard.add(types.InlineKeyboardButton(text='Нет', callback_data=f'roulette|no'))
     return keyboard
 
+
 def lvl_keyboard():
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text='Легко (Выигрыш x1.25 | Шанс 16%)', callback_data=f'roulette_lvl|6'))
     keyboard.add(types.InlineKeyboardButton(text='Cредне (Выигрыш x2 | Шанс 11%)', callback_data=f'roulette_lvl|9'))
     keyboard.add(types.InlineKeyboardButton(text='Сложно (Выигрыш x3 | Шанс 8%)', callback_data=f'roulette_lvl|12'))
     return keyboard
+
 
 def encode_roulette_keyboard(lvl):
     """Рулетка"""
@@ -119,5 +121,4 @@ def decode_roulette_keyboard(list_key):
                 button1 = types.InlineKeyboardButton(text=answer_list[h+1], callback_data=f"roulette_finish")
                 button2 = types.InlineKeyboardButton(text=answer_list[h+2], callback_data=f"roulette_finish")
             keyboard.add(button, button1, button2)
-
     return keyboard

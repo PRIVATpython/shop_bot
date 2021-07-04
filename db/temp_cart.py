@@ -5,12 +5,14 @@ from db import get_user
 def set_default_temp_cart(user_id):
     db.users.update_one({'user_id': user_id}, {'$set': {'temp_cart.product': '', 'temp_cart.count': 1, 'temp_cart.price': 1, 'temp_cart.all_price': 0, 'category': ''}})
 
+
 def give_bonus(user_id):
     user_data = db.users.find_one({'user_id': user_id})
     temp_cart = user_data['temp_cart']
     new_bonus = int((temp_cart['all_price'])/100*5)
     db.users.update_one({'user_id': user_id}, {'$set': {'temp_cart.product': '', 'temp_cart.count': 1, 'temp_cart.price': 1, 'temp_cart.all_price': 0, 'category': ''},
                                                '$inc': {'temp_cart.bonus': new_bonus}})
+
 
 def get_bonus(user_id):
     user_data = db.users.find_one({'user_id': user_id})
@@ -20,6 +22,7 @@ def get_bonus(user_id):
     else:
         new_bonus = user_data['temp_cart']['bonus'] - user_data['temp_cart']['all_price']
         db.users.update_one({'user_id': user_id}, {'$set': {'temp_cart.all_price': 1, 'temp_cart.bonus': new_bonus}})
+
 
 def set_count_temp_cart(user_id, service, count, category):
     """изменяет кол-во в корзине"""
@@ -57,10 +60,12 @@ def set_temp_cart(user_id, service, category):
                                                         'temp_cart.category': category,
                                                         'temp_cart.all_price': price}})
 
+
 def get_temp_cart(user_id):
     user = db.users.find_one({'user_id': user_id})
     temp_cart = user['temp_cart']
     return temp_cart
+
 
 def add_comment_temp_cart(user_id, comment):
     db.users.update_one({"user_id": user_id}, {"$set": {"temp_cart.comment_pay": comment}})

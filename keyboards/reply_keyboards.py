@@ -7,8 +7,6 @@ def main_keyboard():
     my_cabinet = types.KeyboardButton('⚙ Мои баллы')
     my_cart = types.KeyboardButton('🛍 Мои покупки')
     support = types.KeyboardButton('👨‍💻 Тех. поддержка')
-    # games = types.KeyboardButton('Игры')
     keyboard.add(product, my_cabinet)
     keyboard.add(my_cart, support)
-    # keyboard.add(games)
     return keyboard

@@ -166,7 +166,6 @@ def no_subcategory_text(service):
     return text
 
 ############################################################################################################################################
-
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'qiwi')
 def pay_qiwi(call):
     user_id = call.message.chat.id
@@ -175,8 +174,9 @@ def pay_qiwi(call):
     keyboard = check_keyboard(call.data.split('|')[1], "qiwi")
     bot.send_message(user_id, f"Переведите на QIWI кошелек \n+79006292609\n{temp_cart['all_price']} рублей\nОБЯЗАТЕЛЬНО УКАЗАТЬ КОМЕНТАРИЙ:\n{temp_cart['comment_pay']}", reply_markup=keyboard)
 
+
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'pay' and call.data.split('|')[-1] == 'pay')
-def pay_test(call):
+def final_pay(call):
     """Pay handler - Final pay"""
     user_id = call.message.chat.id
     category = call.data.split('|')[1]

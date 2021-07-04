@@ -5,6 +5,7 @@ from db import get_user
 
 
 def product_keyboard():
+    """Генерит клавиатуры главных катеогрий 2ух типов"""
     keyboard = types.InlineKeyboardMarkup()
     with_cat = main_category_subcategory_data()
     no_cat = main_category_no_subcategory_data()

@@ -1,6 +1,7 @@
 from telebot import types
 from db import purch_product
 
+
 def purch_product_keyboard(user_id):
     keyboard = types.InlineKeyboardMarkup()
     purch_goods = purch_product(user_id)
