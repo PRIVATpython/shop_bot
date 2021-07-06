@@ -2,6 +2,8 @@ from db.db import db
 from db import get_temp_cart
 from utilites import generate_alphanum_random_string
 import os
+import datetime
+
 
 #db-----------------------------------------------------------
 def get_category_subcategory(cat):
@@ -57,7 +59,8 @@ def add_subcategory(admin_data):
             'description': admin_data['description'],
             'accounts': [],
             'img': admin_data['img'],
-            'id': id
+            'id': id,
+            'statistic': []
         }
 
     high_id = admin_data['high_id']
@@ -123,8 +126,18 @@ def give_account_subcategory(user_id):
         account = accounts_list.pop(0)
         accounts.append(account)
         db.social_network.update_one({"accounts_data.name": temp_cart['product']}, {'$set': {"accounts_data.$.accounts": accounts_list}})
+    statistic_sub(user_id=user_id, accounts=accounts, service_id=service['accounts_data'][0]['id'])
     my_purchases(temp_cart['product'], user_id, accounts)
     return accounts
+
+def statistic_sub(user_id, accounts, service_id):
+    today = datetime.datetime.today()
+    data = {
+        'user_id': user_id,
+        "accounts": accounts,
+        "date": today
+    }
+    db.social_network.update_one({"accounts_data.id": service_id}, {'$push': {f"accounts_data.$.statistic": data}})
 
 
 def my_purchases(service, user_id, accounts):
@@ -135,7 +148,6 @@ def my_purchases(service, user_id, accounts):
     del product_data['img']
     product_data['accounts'] = []
     product_data['callback'] = f'purch|{product_data["id"]}'
-    print(product_data)
     user_data = db.users.find_one({'user_id': user_id, 'buy.id': product_data['id']})
     if user_data is None:
         db.users.update_one({'user_id': user_id}, {'$push': {'buy': product_data}})

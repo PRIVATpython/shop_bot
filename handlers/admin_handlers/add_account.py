@@ -166,7 +166,6 @@ def generator_normal_account(message):
             callback = get_user(message.chat.id)
             callback = callback['temp_data_admin']
             for item in login_list:
-                print(item)
                 if callback.split('|')[1] in no_cat:
                     add_no_subcategory_account(callback.split('|')[2], item)
                 elif callback.split('|')[1] in with_cat:  # в соицал не добавляет аккаунты
@@ -203,7 +202,6 @@ def generator_cd_key(message):
             callback = get_user(message.chat.id)
             callback = callback['temp_data_admin']
             for item in key_list:
-                print(item)
                 if callback.split('|')[1] in no_cat:
                     add_no_subcategory_account(callback.split('|')[2], item)
                 elif callback.split('|')[1] in with_cat:  # в соицал не добавляет аккаунты

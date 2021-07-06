@@ -9,9 +9,11 @@ def main_admin_keyboard():
     add = types.KeyboardButton('Добавить')
     delete = types.KeyboardButton('Удалить')
     chande = types.KeyboardButton('Изменить')
+    # view_statistic = types.KeyboardButton('Посмотреть статистику')
     keyboard.add(add)
     keyboard.add(delete)
     keyboard.add(chande)
+    # keyboard.add(view_statistic)
     return keyboard
 
 
@@ -165,4 +167,13 @@ def generation_account_keyboard(callback):
                                             callback_data=f"add_acc|{callback}|normal_acc"))
     keyboard.add(types.InlineKeyboardButton(text=f'Заполнить рандомными ключами для игр', callback_data=f"add_acc|{callback}|cd_key"))
     keyboard.add(types.InlineKeyboardButton(text=f'Отмена', callback_data=f"cancel_input|None"))
+    return keyboard
+
+
+def period_statistic_no_sub(callback):
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(text=f'За сутки', callback_data=f"view_statistic|{callback}|1"))
+    keyboard.add(types.InlineKeyboardButton(text=f'За неделю', callback_data=f"view_statistic|{callback}|7"))
+    keyboard.add(types.InlineKeyboardButton(text=f'За месяц', callback_data=f"view_statistic|{callback}|30"))
+    keyboard.add(types.InlineKeyboardButton(text=f'За год', callback_data=f"view_statistic|{callback}|365"))
     return keyboard

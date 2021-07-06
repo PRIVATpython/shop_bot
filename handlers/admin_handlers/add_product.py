@@ -41,7 +41,8 @@ def add_product_no_sub(call):
     name_category = find_no_subcategory_name(category)
     admin_data[user_id] = {
             'name_category': name_category['name_category'],
-            'high_id': category
+            'high_id': category,
+            'statistic': []
     }
     bot.delete_message(user_id, call.message.message_id)
     message = bot.send_message(user_id, f"Введите название товара: ", reply_markup=cancel_keyboard())

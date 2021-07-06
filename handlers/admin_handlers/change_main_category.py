@@ -42,7 +42,6 @@ def set_new_name_main_category(message):
         old_name = find_no_subcategory_name(admin_data[user_id]["high_id"])
         if old_name is None:
             old_name = find_cat_name(admin_data[user_id]["high_id"])
-            print(old_name)
             old_name = old_name["name_category"]
             change_main_category_sub(old_name=old_name, new_name=new_name)
             bot.send_message(user_id, f"Успешно!")

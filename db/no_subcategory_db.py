@@ -1,6 +1,7 @@
 from db.db import db
 from db import get_temp_cart
 import os
+import datetime
 
 
 def get_data_account_no_subcategory_keyboard(category):
@@ -78,6 +79,21 @@ def del_main_no_subcategory(high_id):
 def change_main_category_no_sub(old_name, new_name):
     db.online_service.update_many({"name_category": old_name}, {"$set": {"name_category": new_name}})
 
+
+def show_statistic_no_sub(period, service_id):
+    today = datetime.datetime.today()
+    past = today + datetime.timedelta(days=-period)
+    service = db.online_service.find_one({'id': service_id})
+    statistic = service['statistic']
+    count = 0
+    sum = 0
+    for item in statistic:
+        if item['date'] < past:
+            break
+        count += len(item['accounts'])
+        sum += item['sum']
+    return count, sum
+
 # give_account----------------------------------------------------------------------------
 
 
@@ -91,8 +107,20 @@ def give_account_no_subcategory(user_id):
         account = accounts_list.pop(0)
         accounts.append(account)
         db.online_service.update({'name': temp_cart['product']}, {'$set': {'accounts': accounts_list}})
+    statistic_no_sub(user_id=user_id, accounts=accounts, service_id=service['id'], sum=temp_cart['all_price'])
     my_purchases_no_sub(service['name'], user_id, accounts)
     return accounts
+
+
+def statistic_no_sub(user_id, accounts, service_id, sum):
+    today = datetime.datetime.today()
+    data = {
+        'user_id': user_id,
+        "accounts": accounts,
+        "date": today,
+        "sum": sum
+    }
+    db.online_service.update_one({'id': service_id}, {"$push": {'statistic': data}})
 
 
 def my_purchases_no_sub(service, user_id, accounts):

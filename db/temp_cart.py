@@ -42,7 +42,6 @@ def set_count_temp_cart(user_id, service, count, category):
             return True
     db.users.update_one({'user_id': user_id}, {'$inc': {'temp_cart.count': count}})
     user_data = db.users.find_one({'user_id': user_id})
-    print(service['price'] * user_data['temp_cart']['count'])
     db.users.update_one({'user_id': user_id}, {'$set': {'temp_cart.all_price': service['price'] * user_data['temp_cart']['count']}})
 
 
