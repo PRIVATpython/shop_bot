@@ -22,7 +22,6 @@ def get_or_create_user(user_data):
                 'category': '',
                 'bonus': 0,
                 'comment_pay': ''
-                # добавить pay comment
             },
             "buy": []
         }
@@ -34,18 +33,3 @@ def get_user(user_id):
     user = db.users.find_one({'user_id': user_id})
     return user
 
-
-import datetime
-
-def test():
-    today = datetime.datetime.today()
-    past = today + datetime.timedelta(days=-1)
-    data = {'time': past, 'count': 10}
-    x = db.test.find_one({'id': 'e3daf'})
-    count = 0
-    for i in x['statistic']:
-        count += i['count']
-    # db.test.update_one({'id': 'e3daf'}, {"$push": {'statistic': data}})
-
-if __name__ == '__main__':
-    test()
