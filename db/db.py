@@ -8,7 +8,10 @@ db = client[MONGO_DB]
 def get_or_create_user(user_data):
     '''Создание/получение юзера'''
     user = db.users.find_one({'user_id': user_data.id})
-    if not user:
+    if user :
+        if user['username'] != user_data.username:
+            db.users.update_one({'user_id': user_data.id}, {'$set': {'username': user_data.username}})
+    elif not user:
         user = {
             "user_id": user_data.id,
             "first_name": user_data.first_name,
@@ -30,6 +33,7 @@ def get_or_create_user(user_data):
 
 
 def get_user(user_id):
+    '''Получение юзера по id'''
     user = db.users.find_one({'user_id': user_id})
     return user
 

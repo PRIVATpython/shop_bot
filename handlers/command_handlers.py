@@ -1,6 +1,6 @@
 from handlers.handlers import bot
-from db import get_or_create_user
-from keyboards import main_keyboard, main_admin_keyboard
+from db import get_or_create_user, get_user
+from keyboards import main_keyboard, main_admin_keyboard, main_super_admin_keyboard
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -13,9 +13,12 @@ def command_start(message):
 @bot.message_handler(commands=['admin', 'superadmin'])
 @bot.message_handler(regexp='^(Назад)$')
 def command_start(message):
+	print(message)
 	user = get_or_create_user(message.from_user)
 	if user['admin'] == 'admin':
 		bot.send_message(message.chat.id, "Я хочу что-то: ", reply_markup=main_admin_keyboard())
+	elif user['admin'] == 'superadmin':
+		bot.send_message(message.chat.id, "Я хочу что-то: ", reply_markup=main_super_admin_keyboard())
 
 
 

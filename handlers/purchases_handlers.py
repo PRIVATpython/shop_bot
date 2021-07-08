@@ -11,6 +11,7 @@ def my_purch(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'purch')
 def accounts_list_purch(call):
+	'''Показывает пользователю его покупки после выбора определенного товара'''
 	user_id = call.message.chat.id
 	bot.delete_message(user_id, call.message.message_id)
 	id = call.data.split('|')[1]

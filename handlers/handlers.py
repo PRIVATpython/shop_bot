@@ -6,7 +6,7 @@ from db import get_subcategory_data, get_subcategory, give_account_no_subcategor
 from db import main_category_no_subcategory, get_data_account_no_subcategory
 from db import get_temp_cart
 from db import get_bonus, give_bonus, add_comment_temp_cart
-from db import get_or_create_user, set_temp_cart, set_count_temp_cart, set_default_temp_cart
+from db import get_or_create_user, set_temp_cart, set_count_temp_cart, set_default_temp_cart, get_user
 from utilites import generate_alphanum_random_string
 
 bot = telebot.TeleBot(TELEGRAM_KEY, parse_mode='MARKDOWN')
@@ -18,6 +18,8 @@ no_cat = main_category_no_subcategory()
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'back' and call.data.split('|')[1] == 'category')
 def product(message):
     try:
+        user = get_or_create_user(message.chat)
+        print(user)
         user_id = message.chat.id
         global with_cat
         with_cat = main_category_subcategory()
@@ -54,7 +56,8 @@ def subcategory_buy(call):
     if answer is False:
         bot.answer_callback_query(call.id, text='Минимальное количество товара: 1 шт')
     elif answer is True:
-        user = get_or_create_user(call.message.chat)
+        # user = get_or_create_user(call.message.chat)
+        user = get_user(user_id)
         bot.answer_callback_query(call.id, text=f'Максимальное количество товара: {user["temp_cart"]["count"]} шт.')
     return subcategory_data_prod(call)
 
@@ -67,7 +70,8 @@ def subcategory_data_prod(call):
     subcategory_data = get_subcategory_data(call.data.split('|')[2])
     set_temp_cart(user_id, subcategory_data, call.data.split('|')[0])
     text = subcategory_page(subcategory_data)
-    user = get_or_create_user(call.message.chat)
+    # user = get_or_create_user(call.message.chat)
+    user = get_user(user_id)
     bot.delete_message(user_id, call.message.message_id)
     photo = subcategory_data['img']
     if photo.split('/')[0] == 'img':
@@ -130,7 +134,8 @@ def no_subcategory_buy(call):
     if answer is False:
         bot.answer_callback_query(call.id, text='Минимальное количество товара: 1 шт.')
     elif answer is True:
-        user = get_or_create_user(call.message.chat)
+        # user = get_or_create_user(call.message.chat)
+        user = get_user(user_id)
         bot.answer_callback_query(call.id, text=f'Макисмальное количество товара: {user["temp_cart"]["count"]} шт.')
     return account_no_subcategory(call)
 
@@ -142,7 +147,8 @@ def account_no_subcategory(call):
     callback = call.data.split('|')[1]
     service = get_data_account_no_subcategory(callback)
     bot.delete_message(user_id, call.message.message_id)
-    user = get_or_create_user(call.message.chat)
+    # user = get_or_create_user(call.message.chat)
+    user = get_user(user_id)
     set_temp_cart(user['user_id'], service, call.data.split('|')[0])  # задает имя сервиса во временной коризне
     text = no_subcategory_text(service)
     photo = service['img']

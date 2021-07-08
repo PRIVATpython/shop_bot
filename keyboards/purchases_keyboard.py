@@ -3,6 +3,7 @@ from db import purch_product
 
 
 def purch_product_keyboard(user_id):
+    '''Генерит клавиатуру для списка покупок'''
     keyboard = types.InlineKeyboardMarkup()
     purch_goods = purch_product(user_id)
     for item in purch_goods:

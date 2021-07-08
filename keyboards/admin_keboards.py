@@ -1,7 +1,7 @@
 from telebot import types
 from db import get_admin_data_no_subcategory, main_category_no_subcategory_data
 from db import main_category_subcategory_data, get_category_subcategory
-
+from db import get_users_admin
 
 def main_admin_keyboard():
     """Главная админская клавиатура"""
@@ -9,11 +9,18 @@ def main_admin_keyboard():
     add = types.KeyboardButton('Добавить')
     delete = types.KeyboardButton('Удалить')
     chande = types.KeyboardButton('Изменить')
-    # view_statistic = types.KeyboardButton('Посмотреть статистику')
+    view_statistic = types.KeyboardButton('Посмотреть статистику')
     keyboard.add(add)
     keyboard.add(delete)
     keyboard.add(chande)
-    # keyboard.add(view_statistic)
+    keyboard.add(view_statistic)
+    return keyboard
+
+def main_super_admin_keyboard():
+    """Клавиатура для суперадмина"""
+    keyboard = main_admin_keyboard()
+    superadmin = types.KeyboardButton('Назначить/Убрать администратора')
+    keyboard.add(superadmin)
     return keyboard
 
 
@@ -60,6 +67,13 @@ def change_admin_keyboard():
     keyboard.add(back)
     return keyboard
 
+def superadmin_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Добавить администратора')
+    button1 = types.KeyboardButton('Убрать администратора')
+    keyboard.add(button)
+    keyboard.add(button1)
+    return keyboard
 
 def admin_product_keyboard(category):
     """Генерит клавиатуру из всех типов(Subcategory - No subcategory)"""
@@ -176,4 +190,13 @@ def period_statistic_no_sub(callback):
     keyboard.add(types.InlineKeyboardButton(text=f'За неделю', callback_data=f"view_statistic|{callback}|7"))
     keyboard.add(types.InlineKeyboardButton(text=f'За месяц', callback_data=f"view_statistic|{callback}|30"))
     keyboard.add(types.InlineKeyboardButton(text=f'За год', callback_data=f"view_statistic|{callback}|365"))
+    return keyboard
+
+
+
+def show_all_admin_keyboard():
+    users = get_users_admin()
+    keyboard = types.InlineKeyboardMarkup()
+    for user in users:
+        keyboard.add(types.InlineKeyboardButton(text=f'{user["username"]}', callback_data=f"del_admin|{user['user_id']}"))
     return keyboard

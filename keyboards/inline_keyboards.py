@@ -17,6 +17,7 @@ def product_keyboard():
 
 
 def account_no_subcategory_keyboard(category):
+    '''Генерит клавиатуру для товаров No subcategory'''
     keyboard = types.InlineKeyboardMarkup()
     keyboard_data = get_data_account_no_subcategory_keyboard(category)
     for item in keyboard_data:
@@ -27,6 +28,7 @@ def account_no_subcategory_keyboard(category):
 
 
 def buy_keyboard(service, count, back):
+    '''Клавиатура покупки'''
     keyboard = types.InlineKeyboardMarkup()
     down_1 = types.InlineKeyboardButton(text=f'🔻', callback_data=f'{service}|buy|-1')
     count = types.InlineKeyboardButton(text=f'{count} шт', callback_data=f'{service}|buy|0')
@@ -43,6 +45,7 @@ def buy_keyboard(service, count, back):
 
 
 def category_subcategory_keyboard(cat):
+    '''Генерит клавиатуру для подкатегорий'''
     keyboard = types.InlineKeyboardMarkup()
     category = get_category_subcategory(cat)
     for item in category:
@@ -52,6 +55,7 @@ def category_subcategory_keyboard(cat):
 
 
 def subcategory_keyboard(cat, category_acc):
+    '''Генерит клавитуру для товаров Subcategory'''
     keyboard = types.InlineKeyboardMarkup()
     category = get_subcategory(category_acc)
     category = category['accounts_data']

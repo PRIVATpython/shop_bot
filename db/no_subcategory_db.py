@@ -37,15 +37,18 @@ def main_category_no_subcategory_data():
 
 
 def get_admin_data_no_subcategory(category):
+    '''Находит все гланвые категории в No subcategory'''
     services = db.online_service.find({'high_id': category})
     return services
 
 
 def add_no_subcategory_account(callback, account):
+    '''Добавляет новые аккаунты в существующий товар'''
     db.online_service.update({'id': callback}, {"$push": {'accounts': account}})
 
 
 def add_new_no_subcategory(admin_data):
+    '''Добавляет новый товар'''
     db.online_service.insert_one(admin_data)
     service = db.online_service.find_one({'name': admin_data['name']})
     id = str(service['_id'])[-5:]
@@ -54,6 +57,7 @@ def add_new_no_subcategory(admin_data):
 
 
 def del_no_subcategory_db(service):
+    '''Удаляет товар'''
     goods = db.online_service.find_one({'id': service})
     if goods['img'].split('/')[0] == 'img':
         os.remove(path=goods['img'])
@@ -61,6 +65,7 @@ def del_no_subcategory_db(service):
 
 
 def change_no_subcategory(data, service, category):
+    '''Изменяет цену/описание/фото товара'''
     if category == 'img':
         goods = db.online_service.find_one({'id': service})
         if goods['img'].spilt('/')[0] == 'img':
@@ -69,18 +74,22 @@ def change_no_subcategory(data, service, category):
 
 
 def find_no_subcategory_name(high_id):
+    '''Находит имя главной катеогрии по id'''
     category = db.online_service.find_one({'high_id': high_id})
     return category
 
 
 def del_main_no_subcategory(high_id):
+    '''Удаляет все товары выбранной главной категории'''
     db.online_service.remove({'high_id': high_id})
 
 def change_main_category_no_sub(old_name, new_name):
+    '''Изменяет имя главной категории'''
     db.online_service.update_many({"name_category": old_name}, {"$set": {"name_category": new_name}})
 
 
 def show_statistic_no_sub(period, service_id):
+    '''Показывает статистику товара''' # За сутки не показывает товаров
     today = datetime.datetime.today()
     past = today + datetime.timedelta(days=-period)
     service = db.online_service.find_one({'id': service_id})
@@ -98,6 +107,7 @@ def show_statistic_no_sub(period, service_id):
 
 
 def give_account_no_subcategory(user_id):
+    '''Отдает аккаунты пользователю после успешной покупки'''
     temp_cart = get_temp_cart(user_id)
     count = temp_cart['count']
     service = db.online_service.find_one({'name': temp_cart['product']})
@@ -113,6 +123,7 @@ def give_account_no_subcategory(user_id):
 
 
 def statistic_no_sub(user_id, accounts, service_id, sum):
+    '''Записывает статистику после покупки'''
     today = datetime.datetime.today()
     data = {
         'user_id': user_id,
@@ -124,6 +135,7 @@ def statistic_no_sub(user_id, accounts, service_id, sum):
 
 
 def my_purchases_no_sub(service, user_id, accounts):
+    '''Добавляет аккаунты в список покупок пользователя после покпки'''
     service_data = db.online_service.find_one({"name": service})
     del service_data['_id']
     del service_data['img']
@@ -138,5 +150,3 @@ def my_purchases_no_sub(service, user_id, accounts):
         db.users.update_one({'user_id': user_id}, {'$push': {'buy': service_data}})
     for item in accounts:
         db.users.update_one({'user_id': user_id}, {'$push': {'buy.$[i].accounts': item}}, array_filters=[{"i.id": service_data['id']}])
-
-

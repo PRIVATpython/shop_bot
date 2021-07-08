@@ -10,3 +10,4 @@ from handlers.admin_handlers.delete_main_category import *
 from handlers.admin_handlers.main_admin_keyboard_handlers import *
 from handlers.admin_handlers.change_main_category import *
 from handlers.admin_handlers.view_statistic import *
+from handlers.admin_handlers.control_admin import *

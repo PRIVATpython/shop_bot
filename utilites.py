@@ -31,6 +31,7 @@ def generator_normal_acc(count):
 
 
 def get_pay_in(api_access_token):
+    '''Берет последние 25 входящих платежей на киви'''
     s7 = requests.Session()
     s7.headers['Accept']= 'application/json'
     s7.headers['authorization'] = 'Bearer ' + api_access_token
@@ -40,10 +41,9 @@ def get_pay_in(api_access_token):
 
 
 def check_qiwi_pay(comment, price):
+    '''Проверяет платеж по коментарию и сумме'''
     payments = get_pay_in(QIWI_TOKEN)
-    # print(payments)
     for payment in payments['data']:
-        # print(p)
         comment_pay = payment['comment']
         price_pay = payment['sum']['amount']
         if comment_pay == comment and price_pay == price:

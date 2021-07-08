@@ -38,7 +38,7 @@ def view_statistic_period(call):
         service = get_data_account_no_subcategory(call.data.split("|")[2])
         price = service['price']
         bot.delete_message(user_id, call.message.message_id)
-        bot.send_message(user_id, f"За этот период было {count} покупок на сумму {sum} рублей")
+        bot.send_message(user_id, f"За этот период было проданно {count} аккаунтов на сумму {sum} рублей")
     except Exception as e:
         callback_for_keyboards = call.data.split('|', 1)[1]
         keyboard = period_statistic_no_sub(callback_for_keyboards)

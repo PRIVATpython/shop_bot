@@ -28,8 +28,9 @@ def games_main(message):
                                                    'удвоишь поставленную сумму, играем?', reply_markup=game_yes_no())
 
 
-@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'roulette' and call.data.split('|')[1] in ['yes', 'no']) # Где то здесь
+@bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'roulette' and call.data.split('|')[1] in ['yes', 'no'])
 def roulette(call):
+    '''Главный хендлер игры в рулетку'''
     user_id = call.message.chat.id
     bot.delete_message(user_id, call.message.message_id)
     user_data = get_user(user_id)
@@ -41,6 +42,7 @@ def roulette(call):
 
 
 def set_rate(message):
+    '''Задает ставку'''
     user_id = message.chat.id
     if message.text is not None:
         try:
@@ -69,12 +71,14 @@ def set_rate(message):
 
 
 def lvl_games(message):
+    '''Задает сложность игры (6,9,12 кнопок)'''
     user_id = message.chat.id
     bot.send_message(user_id, f"Выберите сложность: ", reply_markup=lvl_keyboard())
 
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'roulette_lvl')
 def roulette_games(call):
+    '''Показывает список закрытых кнопок'''
     user_id = call.message.chat.id
     bot.clear_step_handler_by_chat_id(chat_id=call.message.chat.id)
     lvl = call.data.split('|')[1]
@@ -89,6 +93,7 @@ def roulette_games(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.split('|')[0] == 'roulette' and call.data.split('|')[1] in ['none', 'prize'])
 def answer_roulette_games(call):
+    '''Показывает список открытых кнопок'''
     user_id = call.message.chat.id
     global temp_data
     key_list, rate, lvl = temp_data[user_id]['key_list'], temp_data[user_id]['rate'], int(temp_data[user_id]['lvl'])
