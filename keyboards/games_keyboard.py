@@ -36,7 +36,7 @@ def encode_roulette_keyboard(lvl):
         list_key.append('none')
     else:
         list_key.append('prize')
-    # Хорошенько перемешиваем список
+    #перемешиваем список
     for item in range(len(list_key) - 1, 0, -1):
         j = random.randint(0, item)
         list_key[item], list_key[j] = list_key[j], list_key[item]

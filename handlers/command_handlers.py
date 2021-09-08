@@ -13,7 +13,6 @@ def command_start(message):
 @bot.message_handler(commands=['admin', 'superadmin'])
 @bot.message_handler(regexp='^(Назад)$')
 def command_start(message):
-	print(message)
 	user = get_or_create_user(message.from_user)
 	if user['admin'] == 'admin':
 		bot.send_message(message.chat.id, "Я хочу что-то: ", reply_markup=main_admin_keyboard())

@@ -101,7 +101,6 @@ def answer_roulette_games(call):
     bot.delete_message(user_id, call.message.message_id)
     if call.data.split('|')[1] == 'prize':
         if lvl == 6:
-            print('here')
             prize = int(rate + (rate * 0.5))
         elif lvl == 9:
             prize = int(rate + (rate * 1))

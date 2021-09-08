@@ -19,7 +19,6 @@ no_cat = main_category_no_subcategory()
 def product(message):
     try:
         user = get_or_create_user(message.chat)
-        print(user)
         user_id = message.chat.id
         global with_cat
         with_cat = main_category_subcategory()

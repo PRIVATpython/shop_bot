@@ -2,6 +2,7 @@ from telebot import types
 from db import get_data_account_no_subcategory_keyboard, main_category_no_subcategory_data
 from db import get_category_subcategory, get_subcategory, main_category_subcategory_data
 from db import get_user
+from settings import TEST_BUY
 
 
 def product_keyboard():
@@ -69,14 +70,15 @@ def subcategory_keyboard(cat, category_acc):
 
 def pay_bonus_keyboard(category, user_id):
     keyboard = types.InlineKeyboardMarkup()
-    button = types.InlineKeyboardButton(text='Оплатить', callback_data=f'pay|{category}|pay')
+    # button = types.InlineKeyboardButton(text='Оплатить', callback_data=f'pay|{category}|pay')
     qiwi = types.InlineKeyboardButton(text='QIWI', callback_data=f'pay|{category}|qiwi')
     data_user = get_user(user_id=user_id)
     if data_user['temp_cart']['bonus'] > 0:
         buy_bonus = types.InlineKeyboardButton(text=f'Использовать бонусы ({data_user["temp_cart"]["bonus"]} бонусов)',
                                                callback_data=f'pay|{category}|pay_bonus')
         keyboard.add(buy_bonus)
-    keyboard.add(button)
+    if TEST_BUY:
+        keyboard.add(types.InlineKeyboardButton(text='Оплатить', callback_data=f'pay|{category}|pay'))
     keyboard.add(qiwi)
     return keyboard
 

@@ -9,11 +9,11 @@ def main_admin_keyboard():
     add = types.KeyboardButton('Добавить')
     delete = types.KeyboardButton('Удалить')
     chande = types.KeyboardButton('Изменить')
-    view_statistic = types.KeyboardButton('Посмотреть статистику')
+    # view_statistic = types.KeyboardButton('Посмотреть статистику')
     keyboard.add(add)
     keyboard.add(delete)
     keyboard.add(chande)
-    keyboard.add(view_statistic)
+    # keyboard.add(view_statistic)
     return keyboard
 
 def main_super_admin_keyboard():
