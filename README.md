@@ -44,7 +44,7 @@
 ***
 1. Клонируйте репозиторий с github
 2. Создайте виртуальное окружение
-3. Установите зависимости pip install -r requirements.txt
+3. Установите зависимости `pip install -r requirements.txt`
 4. Пропишите в файле `settings.py`:
    * `TELEGRAM_KEY` - ключ телеграм бота;
    * `MONGO_DB_LINK` - ссылка на кластер Mongo;
